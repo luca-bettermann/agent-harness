@@ -7,12 +7,13 @@ repos = "repos"
 columns = ["backlog", "open", "in progress", "promotion"]
 merge_branch_prefix = "merge-"
 
-# Optional documentation for human readers. The current CLI does not load this
-# table or enforce links between scopes.
+# Startup refresh reads this registry. Each scope names exactly one branch or
+# one full commit pin. Paths resolve from this file's directory.
 [scopes]
-agents = "."
-personal = "../personal"
-team = "../team-wiki"
+agents = { path = ".", branch = "main" }
+personal = { path = "../personal", branch = "main" }
+team = { path = "../team-wiki", branch = "main" }
+# archive = { path = "../archive", pin = "0123456789abcdef0123456789abcdef01234567" }
 
 [caps]
 root = 15000

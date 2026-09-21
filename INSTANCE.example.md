@@ -10,6 +10,7 @@ Copy this file to `INSTANCE.md` in a private instance. Replace every placeholder
 - Board: `<path from vault.toml>`
 - Task folders: `<paths from vault.toml>`
 - Canonical repository clones: `<workspace>/<repos from vault.toml>/<repo>`
+- Startup scopes and branch or pin targets: `<typed [scopes] entries in vault.toml>`
 - Evergreen personal knowledge store: `<path or repository>`
 - Team knowledge store: `<independent path or repository>`
 - Read-only context documents: `<path or none>`

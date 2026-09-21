@@ -16,6 +16,15 @@ The commands have deliberately different mutation boundaries:
   `glab`, and writes only changed `status` front-matter fields in the vault
   working tree. It does not pull, commit, or push the vault. `--local` performs
   no fetch or status write and returns hygiene results only.
+- `vault startup` reads typed `[scopes]`, fetches each configured target from
+  `origin`, and advances only a clean checkout of its configured branch by
+  fast-forward. It preserves dirty, ahead, diverged, other-branch, and
+  pin-mismatched checkouts. Git LFS caching is explicit; payloads are materialised
+  only for a clean checkout already at the selected commit. A completed report
+  exits zero even when rows need attention; an incomplete deadline report exits
+  124. It never pushes, contacts `upstream`, resolves divergence, or recursively
+  fetches submodules. `vault startup --help` documents the process and
+  whole-run time bounds.
 - `vault move` rebases the vault from `origin`, edits the configured board,
   commits that board, and pushes `origin/main`.
 - `vault sweep` verifies recorded merge ancestry after fetching participating
@@ -25,9 +34,9 @@ The commands have deliberately different mutation boundaries:
 
 The CLI retains legacy task-folder defaults for `tasks` and `08 Tasks`. A new
 instance should set `tasks = ["tasks"]` explicitly, as `vault.example.toml` does.
-The optional `[scopes]` table is documentation only: the current loader ignores
-it and no command enforces scope-link direction. The project installs no startup
-refresh, all-repository pull, or host-side cutover automation.
+The `[scopes]` table is the startup repository registry. It does not enforce
+cross-scope link direction. The project installs no automatic client hook,
+all-repository pull, or host-side cutover automation.
 
 Run the gates:
 

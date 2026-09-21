@@ -57,6 +57,41 @@ def test_vault_toml_overrides_the_built_in_caps_and_board(bench):
     assert config.caps["tasks/"] == 10000
 
 
+def test_typed_scopes_hold_one_explicit_branch_or_pin(bench):
+    pin = "a" * 40
+    bench.write(
+        "vault.toml",
+        VAULT_TOML
+        + '\n[scopes]\nwork = { path = "../work", branch = "main" }\n'
+        + f'frozen = {{ path = "../frozen", pin = "{pin}" }}\n',
+    )
+    assert [
+        (scope.name, scope.path, scope.branch, scope.pin) for scope in load_config(bench.vault).scopes
+    ] == [("work", "../work", "main", None), ("frozen", "../frozen", None, pin)]
+
+
+def test_the_old_scope_string_fails_with_its_migration_shape(bench):
+    bench.write("vault.toml", VAULT_TOML + '\n[scopes]\nwork = "../work"\n')
+    with pytest.raises(VaultError, match=r'work = \{ path = .*, branch = "main" \}'):
+        load_config(bench.vault)
+
+
+@pytest.mark.parametrize(
+    "entry, message",
+    [
+        ('work = { path = "../work" }', "exactly one"),
+        ('work = { path = "../work", branch = "main", pin = "' + "a" * 40 + '" }', "exactly one"),
+        ('work = { path = "../work", branch = "bad..branch" }', "invalid branch"),
+        ('work = { path = "../work", pin = "abc" }', "full 40-character"),
+        ('work = { path = "../work", branch = "main", remote = "upstream" }', "unknown keys"),
+    ],
+)
+def test_ambiguous_scope_targets_fail_before_use(bench, entry, message):
+    bench.write("vault.toml", VAULT_TOML + f"\n[scopes]\n{entry}\n")
+    with pytest.raises(VaultError, match=message):
+        load_config(bench.vault)
+
+
 def test_a_cap_key_naming_no_folder_fails_loud(bench):
     """Mutation caught: an unvalidated key like `tasks` that silently caps nothing."""
     bench.write("vault.toml", VAULT_TOML + "tasks = 10000\n")

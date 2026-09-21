@@ -6,10 +6,13 @@ stream sweep and the hygiene check share this board parser and this transaction.
 
 from __future__ import annotations
 
+import os
 import re
+import signal
 import subprocess
 import tomllib
-from collections.abc import Callable, Sequence
+from collections.abc import Callable, Mapping, Sequence
+from contextlib import suppress
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -20,10 +23,21 @@ FRONTMATTER_RE = re.compile(r"\A---\r?\n(.*?)\r?\n---\r?\n", re.DOTALL)
 FIELD_RE = re.compile(r"([A-Za-z_][\w-]*):\s*(.*)$")
 ITEM_RE = re.compile(r"\s*-\s+(.*)$")
 DEFAULT_CAPS = {"root": 15000, "tasks/": 10000, "08 Tasks/": 10000, "doctrine/": 15000}
+PIN_RE = re.compile(r"[0-9a-fA-F]{40}\Z")
 
 
 class VaultError(RuntimeError):
     """An operation cannot proceed without losing or corrupting vault state."""
+
+
+@dataclass(frozen=True)
+class Scope:
+    """One configured Git checkout and the branch or immutable commit it follows."""
+
+    name: str
+    path: str
+    branch: str | None = None
+    pin: str | None = None
 
 
 @dataclass(frozen=True)
@@ -42,6 +56,7 @@ class Config:
     # from carries this prefix and legitimately outlives the stream card it is retiring.
     merge_branch_prefix: str = "merge-"
     caps: dict[str, int] = field(default_factory=lambda: dict(DEFAULT_CAPS))
+    scopes: tuple[Scope, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -85,6 +100,34 @@ def load_config(vault: Path) -> Config:
     for key in caps:
         if key != "root" and not key.endswith("/"):
             raise VaultError(f"cap key {key!r} names no folder: use 'root' or a prefix ending in '/'")
+    raw_scopes = raw.get("scopes", {})
+    if not isinstance(raw_scopes, dict):
+        raise VaultError("[scopes] must be a TOML table")
+    scopes: list[Scope] = []
+    for name, value in raw_scopes.items():
+        if isinstance(value, str):
+            escaped = value.replace("\\", "\\\\").replace('"', '\\"')
+            raise VaultError(
+                f"scope {name!r} uses the old string form; migrate to "
+                f'{name} = {{ path = "{escaped}", branch = "main" }}'
+            )
+        if not isinstance(value, dict):
+            raise VaultError(f"scope {name!r} must be an inline table")
+        unknown = set(value) - {"path", "branch", "pin"}
+        if unknown:
+            raise VaultError(f"scope {name!r} has unknown keys: {', '.join(sorted(unknown))}")
+        path_value = value.get("path")
+        branch = value.get("branch")
+        pin = value.get("pin")
+        if not isinstance(path_value, str) or not path_value:
+            raise VaultError(f"scope {name!r} needs a non-empty string path")
+        if (branch is None) == (pin is None):
+            raise VaultError(f"scope {name!r} needs exactly one of branch or pin")
+        if branch is not None and (not isinstance(branch, str) or not _valid_branch(branch)):
+            raise VaultError(f"scope {name!r} has invalid branch {branch!r}")
+        if pin is not None and (not isinstance(pin, str) or not PIN_RE.fullmatch(pin)):
+            raise VaultError(f"scope {name!r} pin must be a full 40-character commit ID")
+        scopes.append(Scope(str(name), path_value, branch, pin.lower() if isinstance(pin, str) else None))
     return Config(
         board=str(raw.get("board", Config.board)),
         tasks=tuple(str(name) for name in raw.get("tasks", Config.tasks)),
@@ -96,6 +139,20 @@ def load_config(vault: Path) -> Config:
         backlog_days=int(raw.get("backlog_days", Config.backlog_days)),
         merge_branch_prefix=str(raw.get("merge_branch_prefix", Config.merge_branch_prefix)),
         caps=caps,
+        scopes=tuple(scopes),
+    )
+
+
+def _valid_branch(value: str) -> bool:
+    """The branch-name constraints enforced by `git check-ref-format --branch`."""
+    if not value or value.startswith("-") or value == "@" or value.endswith(("/", ".")):
+        return False
+    if ".." in value or "@{" in value or "//" in value:
+        return False
+    if any(ord(char) < 32 or ord(char) == 127 or char in " ~^:?*[\\" for char in value):
+        return False
+    return all(
+        part and not part.startswith(".") and not part.endswith(".lock") for part in value.split("/")
     )
 
 
@@ -209,10 +266,60 @@ class Repo:
     def __init__(self, root: Path) -> None:
         self.root = root
 
-    def git(self, *args: str, check: bool = True) -> subprocess.CompletedProcess[str]:
-        result = subprocess.run(
-            ("git", "-C", str(self.root), *args), capture_output=True, text=True, encoding="utf-8"
-        )
+    def git(
+        self,
+        *args: str,
+        check: bool = True,
+        timeout: float | Callable[[], float] | None = None,
+        env: Mapping[str, str] | None = None,
+        input_text: str | None = None,
+    ) -> subprocess.CompletedProcess[str]:
+        argv = ("git", "-C", str(self.root), *args)
+        resolved_timeout = timeout() if callable(timeout) else timeout
+        if resolved_timeout is None:
+            result = subprocess.run(
+                argv,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                env={**os.environ, **env} if env else None,
+                input=input_text,
+            )
+        else:
+            grouped = os.name == "posix"
+            process = subprocess.Popen(
+                argv,
+                stdin=subprocess.PIPE if input_text is not None else None,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                text=True,
+                encoding="utf-8",
+                env={**os.environ, **env} if env else None,
+                start_new_session=grouped,
+            )
+            try:
+                stdout, stderr = process.communicate(input_text, timeout=resolved_timeout)
+            except subprocess.TimeoutExpired as error:
+                stop_grace = min(0.2, max(0.05, resolved_timeout))
+                if grouped:
+                    with suppress(ProcessLookupError):
+                        os.killpg(process.pid, signal.SIGTERM)
+                else:
+                    process.terminate()
+                try:
+                    process.wait(timeout=stop_grace)
+                except subprocess.TimeoutExpired:
+                    if grouped:
+                        with suppress(ProcessLookupError):
+                            os.killpg(process.pid, signal.SIGKILL)
+                    else:
+                        process.kill()
+                    try:
+                        process.wait(timeout=stop_grace)
+                    except subprocess.TimeoutExpired as kill_error:
+                        raise VaultError(f"git {' '.join(args)} did not stop after SIGKILL") from kill_error
+                raise VaultError(f"git {' '.join(args)} timed out after {resolved_timeout:g}s") from error
+            result = subprocess.CompletedProcess(argv, process.returncode, stdout, stderr)
         if check and result.returncode:
             raise VaultError(f"git {' '.join(args)} failed: {(result.stderr or result.stdout).strip()}")
         return result

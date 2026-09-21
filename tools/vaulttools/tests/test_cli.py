@@ -42,6 +42,13 @@ def test_report_only_hygiene_never_exits_non_zero(bench, capsys):
     assert "temp" in capsys.readouterr().out
 
 
+def test_global_config_load_rejects_the_legacy_scope_shape(bench, capsys):
+    bench.write("vault.toml", '[scopes]\nwork = "../work"\n')
+
+    assert main(["--vault", str(bench.vault), "hygiene", "--report-only"]) == 1
+    assert "old string form" in capsys.readouterr().err
+
+
 def test_a_refused_sweep_reports_and_exits_non_zero(bench, capsys):
     tip = bench.repo("alpha-repo", "alpha", merged=False)
     bench.stream("alpha", "Alpha stream", tip, "alpha-repo")

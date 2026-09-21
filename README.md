@@ -21,6 +21,7 @@ The working vault and a team wiki may be independent sibling repositories. Recor
 - Python 3.11 or newer
 - [uv](https://docs.astral.sh/uv/)
 - Git
+- Git LFS when a configured repository uses LFS
 - `glab` only when `vault sync` must derive stream state from GitLab merge requests
 
 ## Start a private instance
@@ -42,7 +43,12 @@ For an existing private repository with unrelated history, add this public repos
 
 ## Daily use
 
-Run `uv run vault --help` and each subcommand's `--help` for the current interface. The command effects are summarised in [tools/README.md](tools/README.md): `hygiene` is read-only, `sync` may fetch canonical repositories and edit derived status fields, and `move` and `sweep` commit and push private vault state.
+Run `uv run vault --help` and each subcommand's `--help` for the current interface. The command effects are summarised in [tools/README.md](tools/README.md): `startup` performs a bounded refresh of configured scopes, `hygiene` is read-only, `sync` may fetch canonical repositories and edit derived status fields, and `move` and `sweep` commit and push private vault state.
+
+```sh
+cd tools/vaulttools
+uv run vault --vault ../.. startup --timeout 20 --deadline 120
+```
 
 Pull private work from `origin` as usual. Review public framework updates separately: fetch `upstream`, inspect the public-only range, then merge an accepted public commit into the private branch. Do not combine an upstream framework review with an ordinary private `origin` pull.
 
@@ -63,8 +69,8 @@ uv run vault --help
 
 ## Shipped limits
 
-- `vault sync` is explicit; the harness does not install a startup refresh or pull every mounted repository automatically.
+- `vault startup` is explicit; the harness installs no automatic host or client invocation.
 - Default remote status derivation uses GitLab merge-request state through `glab`. `--local` writes no status and runs hygiene only.
 - `vault sync` does not pull, commit, or push the vault. In remote mode it fetches only the canonical repositories needed for status derivation and writes changed status fields to the working tree.
-- A `[scopes]` table may document instance paths, but the current CLI neither loads it nor enforces cross-scope link direction.
+- A typed `[scopes]` table configures startup paths and branch or pin targets. It does not enforce cross-scope link direction.
 - The repository ships no host installer. Hook installation is the explicit `vault hook install` action.

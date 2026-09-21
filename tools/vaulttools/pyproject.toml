@@ -1,7 +1,7 @@
 [project]
 name = "vaulttools"
 version = "0.1.0"
-description = "Vault board, sweep, hygiene, usage and note-size tools."
+description = "Vault startup, board, sweep, hygiene, usage and note-size tools."
 requires-python = ">=3.11"
 
 [dependency-groups]

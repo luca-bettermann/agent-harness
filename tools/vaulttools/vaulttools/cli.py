@@ -1,4 +1,4 @@
-"""The `vault` command: note-size hook, card mover, stream sweep and hygiene check."""
+"""The `vault` command: startup refresh, note gate, task workflow and hygiene."""
 
 from __future__ import annotations
 
@@ -7,7 +7,7 @@ import sys
 from collections.abc import Sequence
 from pathlib import Path
 
-from . import hook, hygiene, sweep, sync
+from . import hook, hygiene, startup, sweep, sync
 from .board import Repo, VaultError, find_root, find_vault, load_config, move_and_push, prepare
 
 
@@ -35,6 +35,14 @@ def _parser() -> argparse.ArgumentParser:
     syncer = commands.add_parser("sync", help="derive each stream's status from git and write it back")
     syncer.add_argument("--root", type=Path, default=None, help="root holding the canonical clones")
     syncer.add_argument("--local", action="store_true", help="offline: run hygiene only, write no status")
+
+    starter = commands.add_parser("startup", help="refresh and report configured repository scopes")
+    starter.add_argument(
+        "--timeout", type=float, default=20, help="seconds allowed for each Git or LFS command"
+    )
+    starter.add_argument(
+        "--deadline", type=int, default=120, help="seconds allowed for the complete startup report"
+    )
 
     clean = commands.add_parser("hygiene", help="check the root and vault for leftovers")
     clean.add_argument("--root", type=Path, default=None, help="root holding the canonical clones")
@@ -70,6 +78,10 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(f"    note  {notice}")
             print(hygiene.render(report.rows))
             return 0
+        if args.command == "startup":
+            report = startup.run(vault, config, args.timeout, args.deadline)
+            print(startup.render(report))
+            return report.exit_code
         rows = hygiene.check(vault, config, root)
         print(hygiene.render(rows))
         return 0 if args.report_only else int(hygiene.blocked(rows))

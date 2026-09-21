@@ -1,0 +1,23 @@
+# Python environments, caches, and build output
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyright/
+*.egg-info/
+build/
+dist/
+
+# Local editor and operating-system state
+.obsidian/
+.vscode/
+.idea/
+.pandoc/
+.DS_Store
+Thumbs.db
+
+# Private nested repositories or mounts used by existing instances
+personal/
+

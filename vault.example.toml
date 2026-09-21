@@ -1,0 +1,21 @@
+# Copy to vault.toml in a private instance. This file documents layout and
+# enforcement bounds; concrete instance values belong in the copied file.
+
+board = "Kanban.md"
+tasks = ["tasks"]
+repos = "repos"
+columns = ["backlog", "open", "in progress", "promotion"]
+merge_branch_prefix = "merge-"
+
+# Optional documentation for human readers. The current CLI does not load this
+# table or enforce links between scopes.
+[scopes]
+agents = "."
+personal = "../personal"
+team = "../team-wiki"
+
+[caps]
+root = 15000
+"doctrine/" = 15000
+"tasks/" = 10000
+

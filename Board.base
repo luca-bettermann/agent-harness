@@ -1,0 +1,54 @@
+views:
+  - type: table
+    name: Streams
+    filters:
+      and:
+        - type == "stream"
+    order:
+      - status
+      - file.name
+      - repos
+      - blocked
+    sort:
+      - property: status
+        direction: ASC
+      - property: file.name
+        direction: ASC
+  - type: table
+    name: Backlog
+    filters:
+      and:
+        - type == "task"
+        - stream == ""
+    order:
+      - file.name
+      - repos
+      - blocked
+      - file.mtime
+    sort:
+      - property: file.mtime
+        direction: DESC
+  - type: table
+    name: In a stream
+    filters:
+      and:
+        - type == "task"
+        - stream != ""
+    order:
+      - file.name
+      - stream
+      - repos
+      - blocked
+    sort:
+      - property: stream
+        direction: ASC
+  - type: table
+    name: Blocked
+    filters:
+      and:
+        - type != ""
+        - blocked != ""
+    order:
+      - file.name
+      - stream
+      - blocked

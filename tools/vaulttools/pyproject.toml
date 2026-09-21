@@ -1,0 +1,30 @@
+[project]
+name = "vaulttools"
+version = "0.1.0"
+description = "Vault board, sweep, hygiene, usage and note-size tools."
+requires-python = ">=3.11"
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff", "pyright"]
+
+[project.scripts]
+vault = "vaulttools.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 108
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.pyright]
+include = ["vaulttools", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "standard"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

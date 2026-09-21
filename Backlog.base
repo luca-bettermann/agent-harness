@@ -1,0 +1,18 @@
+filters:
+  and:
+    - type == "task"
+    - stream == ""
+views:
+  - type: table
+    name: Backlog
+    order:
+      - file.name
+      - summary
+      - repos
+      - blocked
+      - file.mtime
+    sort:
+      - property: repos
+        direction: DESC
+      - property: file.mtime
+        direction: DESC

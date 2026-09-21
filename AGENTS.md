@@ -130,9 +130,14 @@ repeated whenever referred to.
 ## 8. Routing table
 
 Before starting, read every row that applies; a tracked task always adds Workflow.
+An instance may extend this table through the marked `Work` → `Read` table in
+`INSTANCE.md`. Its stable route IDs and ordered source links are the sole native
+wrapper inventory. Later sources may override only explicit preferences in their
+stated scope; prose cannot override an enforced schema or a rule outside it.
 
 | Work | Read |
 | --- | --- |
+| General writing and editing | `doctrine/Writing Guide.md` |
 | Coding, tests, refactors | `doctrine/skills/SKILLS - Coding.md` |
 | Architecture, design, any interface change | `doctrine/skills/SKILLS - Architecture.md` |
 | Single-source questions, a new module or constant | `doctrine/skills/SKILLS - SSOT and Single Pipeline.md` |

@@ -20,6 +20,22 @@ Copy this file to `INSTANCE.md` in a private instance. Replace every placeholder
 - Human authority for spend, design, review, and promotion: `<name or role>`
 - Release or deployment bindings: `<links to their existing authorities>`
 
+## Agent extensions
+
+The marked table is the only inventory for native skill wrappers. Each `Work`
+cell ends with a stable route ID. Each `Read` cell links ordered sources from the
+public base through private supplements to applicable instance knowledge. Add a
+knowledge link only after its target exists. Every client exposes the same rows;
+its adapter may add a stable native name prefix. Later sources may override an
+explicit preference only in their stated scope; prose cannot override an enforced
+schema or a rule outside that scope.
+
+<!-- BEGIN NATIVE SKILL ROUTES -->
+| Work | Read |
+| --- | --- |
+| Writing and editing (`writing`) | [base](doctrine/Writing%20Guide.md) → [instance](INSTANCE.md) |
+<!-- END NATIVE SKILL ROUTES -->
+
 ## Physical systems and secrets
 
 - Human owners for physical systems: `<links to the owning repository context files>`

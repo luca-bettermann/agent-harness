@@ -4,7 +4,8 @@ This skill is the mandatory design and review gate for changes that add or
 alter state, identity, derivation, persistence, orchestration, or presentation.
 [[SKILLS - Architecture]] owns domain decisions; this note checks that each
 decision has one authority and one implementation pipeline. [[SKILLS - Coding]]
-and [[SKILLS - Workflow]] apply it during build and review.
+and [[SKILLS - Workflow]] apply it during build and review. [[Writing Guide]]
+governs how the resulting authority maps and decisions are presented.
 
 ## Core rule
 

@@ -19,6 +19,7 @@ The KB's application of [[Agentic Documentation System]]: it holds the *evergree
 
 ## Writing Notes
 
+- Follow [[Writing Guide]] for general language, structure, links, and status.
 - Write new notes in the knowledge store named by `INSTANCE.md`, using its format.
 - **The filename is the title — no redundant H1.** Obsidian renders the filename as the page header, so never start a note with an `# <Title>` line repeating it (it shows as a double title). Begin with the first content paragraph or a `## ` section.
 - Use Obsidian backlinks (`[[Note Name]]`) liberally — connectivity is critical

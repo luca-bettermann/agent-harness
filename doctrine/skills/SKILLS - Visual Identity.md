@@ -2,6 +2,9 @@
 
 Visual identity's application of [[Agentic Documentation System]]: it's a **conformance-SSOT** — the identity is defined once here, and every output *conforms* to it via a shared style module, never by re-specifying colours per script. The single source is this spec + the style module; the enforcer is "import it, don't hardcode."
 
+[[Writing Guide]] owns general diagram labels and relationship language; this
+skill owns their visual treatment.
+
 | Artifact | Single home | Held by |
 | --- | --- | --- |
 | Palette — colours + semantic roles | the Core Palette (below) | **enforced** conformance — import from the shared style module, never hardcode hex |

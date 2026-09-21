@@ -2,6 +2,9 @@
 
 This skill owns the **work model** — the hierarchy, its board and branch representation, the landing cadence, and the executor protocol — for every tracked task, whatever the craft. Load it alongside the applicable craft skill(s).
 
+Task notes, reviews, and reports follow [[Writing Guide]] for general language,
+structure, links, and status distinctions.
+
 `AGENTS.md` owns the funnel, the column meanings, the hard git, worktree and safety rules, and the dispatch rules; [[tasks-and-collaboration]] owns the operator **policy** on top of this model (authorization, priority, delegation economics, review court, reporting) and `vault.toml` owns every **number**; [[Stream Note Template]] and [[Task Note Template]] own note shape; `tools/` owns the **mechanism** (`vault move`, `vault sweep`, `vault hygiene`, `vault hook`) and `vault --help` its invocation; [[SKILLS - Architecture]] owns what gets decided in design; [[SKILLS - SSOT and Single Pipeline]] is the mandatory design/build/review gate for structural work. This note links each of them and restates none.
 
 ## The work model

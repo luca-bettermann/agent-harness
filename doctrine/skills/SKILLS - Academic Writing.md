@@ -1,6 +1,7 @@
 Method for papers, reports, and other evidence-bearing written deliverables.
 Use with [[SKILLS - Literature Review]] for sources, [[SKILLS - Notes]] for
 evergreen knowledge, and [[SKILLS - Visual Identity]] for figures.
+[[Writing Guide]] owns the general language and structure used by every deliverable.
 
 ## Instance bindings
 
@@ -11,16 +12,12 @@ do not freeze them into generic doctrine.
 
 ## Claims and voice
 
-- Prefer direct, concise sentences and active voice where the actor matters.
 - State what the work does, what the evidence supports, and what remains a
   limitation. Avoid novelty and significance claims that the evidence does not
   establish.
-- Use established field terminology. Define a new term once, justify it, and
-  use it consistently.
 - Keep one spelling and terminology convention within a deliverable, using the
   instance binding or venue rule as authority.
-- Remove filler, repeated transitions, vague intensifiers, and citation piles
-  that have no claim-level purpose.
+- Remove citation piles that have no claim-level purpose.
 
 ## Structure
 

@@ -1,6 +1,7 @@
 Workflow and conventions for literature discovery, assessment, synthesis, and
 tracking. Use with [[SKILLS - Notes]] for note structure and
 [[SKILLS - Academic Writing]] when evidence enters a manuscript.
+[[Writing Guide]] owns general language and structure.
 
 ## Instance bindings
 

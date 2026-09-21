@@ -4,7 +4,8 @@ This skill owns implementation craft. `CLAUDE.md` owns Git, safety, and
 cross-medium SSOT; [[SKILLS - Architecture]] owns design decisions and dependency
 boundaries. Code owns behaviour, `schema.py` / `constants.py` own cross-module
 vocabulary, and `*_CONTEXT.md` owns the as-built module map. Every structural
-change first passes [[SKILLS - SSOT and Single Pipeline]].
+change first passes [[SKILLS - SSOT and Single Pipeline]]. Documentation,
+reviews, and user-facing text follow [[Writing Guide]].
 
 ## General
 

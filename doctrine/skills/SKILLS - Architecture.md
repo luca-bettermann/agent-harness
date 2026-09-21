@@ -2,7 +2,7 @@
 > structure, data flow, storage, boundaries, layering, and schemas. It is
 > distinct from [[SKILLS - Coding]], which owns implementation craft. Co-load
 > both when a build writes code. [[Agentic Documentation System]] supplies the
-> single-source model.
+> single-source model, and [[Writing Guide]] governs prose and diagram language.
 
 ## When this applies
 Designing or changing: a system's structure, an interface or cross-module/cross-repo **contract**, **data flow**, **storage/persistence**, a **data model / schema**, **dependency boundaries**, or **layering** — anything with several reasonable approaches + real trade-offs, or not cleanly reversible. Implementation *within* a settled design → just [[SKILLS - Coding]].

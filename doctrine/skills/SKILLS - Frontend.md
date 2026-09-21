@@ -3,7 +3,8 @@
 This skill owns the workflow and craft for browser-facing surfaces — how they are designed, evidenced, reviewed,
 and accepted. [[SKILLS - Coding]] owns general implementation craft including
 *Projection & display SSOT*; [[SKILLS - Visual Identity]] owns visual
-standards; each repo's `*_CONTEXT.md` owns its as-built structure.
+standards; [[Writing Guide]] owns interface prose; each repo's `*_CONTEXT.md`
+owns its as-built structure.
 
 ## Architecture
 

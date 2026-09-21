@@ -68,4 +68,3 @@ Copy this file to `INSTANCE.md` in a private instance. Replace every placeholder
 - Shared style module: `<import path or repository>`
 - Domain-specific semantic colour mapping: `<link or table>`
 - Presentation and poster templates: `<paths>`
-

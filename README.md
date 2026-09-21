@@ -68,4 +68,3 @@ uv run vault --help
 - `vault sync` does not pull, commit, or push the vault. In remote mode it fetches only the canonical repositories needed for status derivation and writes changed status fields to the working tree.
 - A `[scopes]` table may document instance paths, but the current CLI neither loads it nor enforces cross-scope link direction.
 - The repository ships no host installer. Hook installation is the explicit `vault hook install` action.
-

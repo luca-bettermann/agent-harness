@@ -275,16 +275,35 @@ def _active_hooks(repo: Repo, budget: _Budget) -> tuple[str, ...]:
         path = _git_path(repo, f"hooks/{name}", budget)
         if not path.is_file() or not os.access(path, os.X_OK):
             continue
-        # Git LFS installs this generated hook, but the kernel skips it during
-        # Git advancement and performs its own bounded LFS phase.
-        if (
-            name == "post-merge"
-            and path.stat().st_size <= 8192
-            and b"git lfs post-merge" in path.read_bytes()
-        ):
+        if name == "post-merge" and _is_generated_lfs_post_merge(repo, path, budget):
             continue
         active.append(name)
     return tuple(active)
+
+
+def _is_generated_lfs_post_merge(repo: Repo, path: Path, budget: _Budget) -> bool:
+    """Match the whole hook against the installed Git LFS tool's manual template."""
+    manual = _call(repo, "lfs", "update", "--manual", budget=budget, check=False)
+    if manual.returncode:
+        return False
+    lines = manual.stdout.splitlines()
+    for index, line in enumerate(lines):
+        if not (line.startswith("Add the following to '") and line.endswith("post-merge':")):
+            continue
+        block: list[str] = []
+        for candidate in lines[index + 1 :]:
+            if not candidate:
+                if block:
+                    break
+                continue
+            if not candidate.startswith("\t"):
+                break
+            block.append(candidate.removeprefix("\t"))
+        if not block:
+            return False
+        expected = ("\n".join(block) + "\n").encode()
+        return path.stat().st_size == len(expected) and path.read_bytes() == expected
+    return False
 
 
 def _worktree(scope: Scope, vault: Path, budget: _Budget) -> _Worktree | None:
@@ -904,7 +923,7 @@ def run(
     try:
         worktrees, missing = _inventory(vault, config, budget)
     except _DeadlineReached:
-        return Report(tuple(_unvisited(scope, vault) for scope in config.scopes))
+        return Report(tuple(_unvisited(scope, vault) for scope in config.scopes), complete=False)
 
     rows = list(missing)
     complete = True

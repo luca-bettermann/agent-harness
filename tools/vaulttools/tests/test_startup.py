@@ -203,6 +203,39 @@ def test_active_mutation_hook_preserves_checkout_without_fetch(tmp_path):
     assert git(clone, "rev-parse", "refs/remotes/origin/main").strip() == before
 
 
+def test_spoofed_lfs_comment_is_an_unknown_active_hook_and_blocks_fetch(tmp_path):
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    seed, _, clone = _repository(tmp_path, "spoofed-hook")
+    _publish(seed, "remote.txt", "remote\n")
+    hook = Path(git(clone, "rev-parse", "--git-path", "hooks/post-merge").strip())
+    if not hook.is_absolute():
+        hook = clone / hook
+    hook.write_text("#!/bin/sh\n# git lfs post-merge\nexit 99\n", encoding="utf-8")
+    hook.chmod(0o755)
+    before = git(clone, "rev-parse", "refs/remotes/origin/main").strip()
+
+    report = startup.run(vault, Config(scopes=(_scope("spoofed", clone, vault),)))
+    row = report.rows[0]
+
+    assert (row.relation, row.refresh) == ("hook-blocked", "preserved")
+    assert git(clone, "rev-parse", "refs/remotes/origin/main").strip() == before
+
+
+def test_exact_git_lfs_generated_post_merge_hook_keeps_fast_forward_supported(tmp_path):
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    seed, _, clone = _repository(tmp_path, "lfs-hook")
+    target = _publish(seed, "remote.txt", "remote\n")
+    git(clone, "lfs", "install", "--local")
+
+    report = startup.run(vault, Config(scopes=(_scope("lfs", clone, vault),)))
+    row = report.rows[0]
+
+    assert row.refresh == "advanced"
+    assert row.final_head == target
+
+
 def test_captured_target_does_not_move_when_origin_advances_mid_run(tmp_path, monkeypatch):
     vault = tmp_path / "vault"
     vault.mkdir()
@@ -505,6 +538,40 @@ def test_deadline_kills_the_fetch_process_group_and_reports_unvisited_scope(tmp_
     assert "ATTENTION" in startup.render(report)
     time.sleep(2.2)
     assert not marker.exists()
+
+
+def test_inventory_deadline_is_incomplete_and_exits_124_with_real_git_process(
+    tmp_path, monkeypatch
+):
+    vault = tmp_path / "vault"
+    vault.mkdir()
+    _, _, clone = _repository(tmp_path, "inventory-slow")
+    wrapper_dir = tmp_path / "bin"
+    wrapper_dir.mkdir()
+    wrapper = wrapper_dir / "git"
+    wrapper.write_text(
+        "#!/bin/sh\n"
+        'if [ "$3" = rev-parse ] && [ "$4" = --is-inside-work-tree ]; then sleep 20; fi\n'
+        'exec /usr/bin/git "$@"\n',
+        encoding="utf-8",
+    )
+    wrapper.chmod(0o755)
+    monkeypatch.setenv("PATH", f"{wrapper_dir}:{os.environ['PATH']}")
+
+    started = time.monotonic()
+    report = startup.run(
+        vault,
+        Config(scopes=(_scope("slow-inventory", clone, vault),)),
+        timeout=10,
+        deadline=2,
+    )
+    elapsed = time.monotonic() - started
+
+    assert elapsed < 3
+    assert not report.complete
+    assert report.exit_code == 124
+    assert report.rows[0].refresh == "unvisited"
+    assert startup.render(report).startswith("REPORT INCOMPLETE — DEADLINE")
 
 
 def test_hard_deadline_returns_124_when_actual_state_cannot_be_inspected(tmp_path, monkeypatch):

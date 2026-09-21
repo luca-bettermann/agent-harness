@@ -16,8 +16,8 @@ against each repository's GitLab project; branch existence is a local ref check.
 offline path: it cannot tell a landed stream (its branch gone) from a planned one, so it derives
 and writes no status — running hygiene only — rather than persisting a guess over a correct value.
 
-`vault sync` neither pulls nor commits: the SessionStart hook owns pulling the vault and the
-agent owns committing. Sync only derives statuses (fetching each repository once in the
+`vault sync` neither pulls nor commits: its caller owns refreshing the vault and the agent
+owns committing. Sync only derives statuses (fetching each repository once in the
 default, remote mode) and writes them into the working tree, in three ordered phases —
 preflight derives every status, commit writes the notes whose bytes changed, postflight runs
 hygiene. A derivation fault raises in preflight, so no note is ever left half-written.

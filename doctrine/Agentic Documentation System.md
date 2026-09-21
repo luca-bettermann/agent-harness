@@ -1,7 +1,8 @@
 Reference architecture for an agentic **documentation** system: where knowledge
 and its representations live, with single sources and clean boundaries. This is
-the evergreen model, separated from any one deployment. [[tasks-and-collaboration|Tasks
-and collaboration]] owns the operating policy on top of it. To instantiate the
+the evergreen model, separated from any one deployment.
+[[tasks-and-collaboration|Tasks and collaboration]] owns the operating policy on
+top of it. To instantiate the
 system, keep the method here and fill the concrete bindings in `INSTANCE.md`.
 Per-craft detail lives in [[SKILLS - Coding]], [[SKILLS - Notes]], and
 [[SKILLS - Visual Identity]].

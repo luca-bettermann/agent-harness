@@ -7,8 +7,9 @@ handoff_from:              # optional — the scope that requested this delivera
 ---
 
 <!-- These fields are the whole contract; front matter is the one membership
-authority, so `stream:` must agree with the stream note's `Tasks:` list. Cap: 10,000
-characters. Replace stale status in place — never append a session diary. -->
+authority, so `stream:` must agree with the stream note's `Tasks:` list. The cap
+configured by `vault.toml` applies. Replace stale status in place — never append
+a session diary. -->
 
 ## Scope
 <1–3 sentences: the problem, and what success looks like.>

@@ -154,4 +154,4 @@ Before starting, read every row that applies; a tracked task always adds Workflo
 
 - `vault move` — moves a card between columns in one git transaction.
 - `vault sweep` — the two-phase sweep: to `promotion` on verified merge, deletion on `Execute`.
-- `vault hygiene` — the working-space check: precondition before merge, sweep and landing, postflight after. **Blocks:** an edited canonical clone, a worktree on no live stream's branch, any file in `temp/`, a live stream card missing its `stream/x` branch on any listed repo. **Reports for the operator:** `promotion` count and age, backlog notes past 90 days, over-cap notes; `--report-only` never fails.
+- `vault hygiene` — the working-space check: precondition before merge, sweep and landing, postflight after. **Blocks:** an edited canonical clone, a worktree on no live stream's branch, any file in `temp/`, a live stream card missing its `stream/x` branch on any listed repo. **Reports for the operator:** `promotion` count and age, backlog notes past the configured reporting age, over-cap notes; `--report-only` never fails.

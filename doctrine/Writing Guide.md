@@ -1,27 +1,38 @@
-General writing guidance for the harness and every craft that produces prose,
-notes, reviews, or diagrams. A craft skill may add requirements for its medium;
-an instance may add an explicit scoped preference without restating this guide.
+Guidance for prose, notes, reviews, and diagrams. Craft skills may add
+medium-specific requirements; instances may add scoped preferences without
+restating this guide.
+
+## Conciseness
+
+- Give the shortest explanation that preserves what the reader needs to
+  understand or do. State each point once.
+- Keep paragraphs and sections focused. Cut repeated context and recaps; remove
+  filler.
+- Use natural sentences rather than compressed jargon. Keep evidence,
+  qualifications, and limits that affect the conclusion.
+- Link secondary detail to its owning source. Tables and callouts must simplify
+  information, never disguise overload.
+- Before finishing, remove anything not needed for understanding or action.
 
 ## Language and reasoning
 
 - Use natural, clear language and familiar words. Prefer concrete nouns and
-  active verbs where the actor matters.
-- Lead with the outcome or purpose, then give the context and evidence needed to
-  assess it. Keep the reasoning concise, but preserve qualifications, limits,
-  and uncertainty that change the conclusion.
-- Choose one term for each concept. Define unfamiliar terms on first use and use
-  them consistently.
-- Connect evidence to the claim it supports and an action to its purpose. Remove
-  filler, repeated transitions, and detail that does not help the reader decide
-  or act.
+  active verbs.
+- Lead with the purpose or outcome, then give the context and evidence needed
+  to assess it. Preserve uncertainty that changes the conclusion.
+- Choose one term per concept; define unfamiliar terms on first use.
+- Connect evidence to its claim and an action to its purpose.
+
+## Maintained documents
+
+Explain the current design, rationale, and relevant rejected alternatives.
+Update outdated descriptions; Git holds the change history.
 
 ## Structure
 
-Use scan-friendly structure when it helps a reader find distinct concerns, and
-paragraphs for a connected argument. Use a list for parallel items or steps, a
-table for a comparison or mapping, and a callout for exceptional information
-that needs extra weight. Do not force prose into a structure that makes it
-harder to read.
+Use scan-friendly structure for distinct concerns and paragraphs for connected
+arguments. Use lists for parallel items, tables for comparisons, and callouts
+for exceptional information. Do not force prose into a harder-to-read form.
 
 Keep headings descriptive and sections proportionate to their content. Put the
 main point early. Examples should clarify a rule or decision rather than repeat
@@ -36,10 +47,9 @@ formal bibliography for cited evidence.
 
 ## Diagrams
 
-Use labels that remain clear at reading size. Prefer one or two words when that
-keeps the meaning intact; clarity takes precedence over brevity. Label
-relationships with verbs that state what flows, depends, calls, owns, or changes.
-Keep the same term in the diagram and its surrounding text.
+Use labels that are clear at reading size, preferably one or two words when meaning
+remains intact. Label relationships with verbs stating what flows, depends,
+calls, owns, or changes. Keep diagram terms consistent with surrounding text.
 
 ## Status and decisions
 

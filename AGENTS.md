@@ -137,14 +137,13 @@ stated scope; prose cannot override an enforced schema or a rule outside it.
 
 | Work | Read |
 | --- | --- |
-| General writing and editing | `doctrine/Writing Guide.md` |
+| Writing, notes, and documentation | `doctrine/Writing Guide.md`; ownership and granularity: `doctrine/Agentic Documentation System.md` |
 | Coding, tests, refactors | `doctrine/skills/SKILLS - Coding.md` |
 | Architecture, design, any interface change | `doctrine/skills/SKILLS - Architecture.md` |
 | Single-source questions, a new module or constant | `doctrine/skills/SKILLS - SSOT and Single Pipeline.md` |
 | SSOT in depth (boundaries, reference vs conformance, layer test) | `doctrine/Agentic Documentation System.md` |
 | Any tracked task | `doctrine/skills/SKILLS - Workflow.md` |
 | Authorization, priority, delegation, review and completion policy | `doctrine/tasks-and-collaboration.md` |
-| Notes and vault documentation | `doctrine/skills/SKILLS - Notes.md` |
 | Browser UI and frontend | `doctrine/skills/SKILLS - Frontend.md` |
 | Literature review, summarisation | `doctrine/skills/SKILLS - Literature Review.md` |
 | Academic writing, papers, LaTeX | `doctrine/skills/SKILLS - Academic Writing.md` |

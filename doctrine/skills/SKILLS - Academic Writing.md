@@ -1,6 +1,6 @@
 Method for papers, reports, and other evidence-bearing written deliverables.
-Use with [[SKILLS - Literature Review]] for sources, [[SKILLS - Notes]] for
-evergreen knowledge, and [[SKILLS - Visual Identity]] for figures.
+Use with [[SKILLS - Literature Review]] for sources, [[Agentic Documentation System]]
+for evergreen knowledge, and [[SKILLS - Visual Identity]] for figures.
 [[Writing Guide]] owns the general language and structure used by every deliverable.
 
 ## Instance bindings

@@ -4,8 +4,7 @@ the evergreen model, separated from any one deployment.
 [[tasks-and-collaboration|Tasks and collaboration]] owns the operating policy on
 top of it. To instantiate the
 system, keep the method here and fill the concrete bindings in `INSTANCE.md`.
-Per-craft detail lives in [[SKILLS - Coding]], [[SKILLS - Notes]], and
-[[SKILLS - Visual Identity]].
+Per-craft detail lives in [[SKILLS - Coding]] and [[SKILLS - Visual Identity]].
 
 > Status: **skeleton.** Settled components are filled; others are marked `STUB — fill case-by-case`.
 
@@ -35,7 +34,7 @@ Define any component of the system by answering five things. The first four are 
 ## Components
 
 ### Evergreen knowledge store
-- **Role:** the canonical *what & why* — concepts, rationale, design decisions, a thing's role across the system. One concept per unit; survives a from-scratch rewrite.
+- **Role:** the canonical *what & why* — concepts, rationale, design decisions, a thing's role across the system. Each note has a distinct purpose; smaller decisions extend the nearest existing note. It survives a from-scratch rewrite.
 - **Owns / not:** the *why*. Not the as-built structure (→ Structure docs), not the *how* (→ Code), not work-state (→ Task board).
 - **Relationships:** everything links *in*; it links *out* and never restates a neighbour.
 - **Held by:** reference (links / backlinks).

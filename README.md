@@ -1,6 +1,6 @@
 # agent-harness
 
-`agent-harness` is a Git-backed method and command-line tool for coordinating agent work through task notes, stream notes, a board, and explicit review and promotion gates. The public repository owns the reusable method. A private instance supplies the work, deployment bindings, and knowledge stores for one team.
+`agent-harness` is a Git-backed method and command-line tool for coordinating agent work through task notes, stream notes, a board, and explicit review and promotion gates. The public repository owns the reusable method. The public method works without INSTANCE.md or private configuration. An optional private instance supplies deployment bindings and knowledge stores for one team.
 
 | Public framework | Private instance |
 | --- | --- |
@@ -11,7 +11,7 @@ The working vault and a team wiki may be independent sibling repositories. Recor
 ## Layout
 
 - `AGENTS.md` is the always-read entry point. It loads `INSTANCE.md` when an instance provides one.
-- `doctrine/` holds the reusable operating method, craft skills, and note templates.
+- `doctrine/` holds the reusable operating method, ten craft and method skills, and three note and review templates. Work owns the complete work lifecycle; Interfaces owns published boundaries and verification. Audit covers existing-code diagnosis and redesign.
 - `Board.base` and `Backlog.base` are optional Obsidian Bases views over task front matter.
 - `tools/vaulttools/` provides the `vault` command.
 - `vault.example.toml`, `INSTANCE.example.md`, and `Kanban.example.md` are copied into a private instance and edited there.

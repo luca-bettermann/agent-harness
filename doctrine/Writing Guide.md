@@ -1,66 +1,50 @@
-Guidance for prose, notes, reviews, and diagrams. Craft skills may add
-medium-specific requirements; instances may add scoped preferences without
-restating this guide.
+Owns prose, note and review structure, connected links and diagram wording. [[Agentic Documentation System]] owns knowledge homes and reusable skill structure. Craft files add only medium-specific requirements; INSTANCE supplies scoped preferences.
 
-## Conciseness
+## Reader’s task first
 
-- Give the shortest explanation that preserves what the reader needs to
-  understand or do. State each point once.
-- Keep paragraphs and sections focused. Cut repeated context and recaps; remove
-  filler.
-- Use natural sentences rather than compressed jargon. Keep evidence,
-  qualifications, and limits that affect the conclusion.
-- Link secondary detail to its owning source. Tables and callouts must simplify
-  information, never disguise overload.
-- Before finishing, remove anything not needed for understanding or action.
+The explanation gives its reader what they need to understand the outcome and act.
 
-## Language and reasoning
+**Covers:** The purpose and amount of explanation.
 
-- Use natural, clear language and familiar words. Prefer concrete nouns and
-  active verbs.
-- Lead with the purpose or outcome, then give the context and evidence needed
-  to assess it. Preserve uncertainty that changes the conclusion.
-- Choose one term per concept; define unfamiliar terms on first use.
-- Connect evidence to its claim and an action to its purpose.
+**Applying:** A result opens with what changed and the evidence needed to assess it.
 
-## Maintained documents
+**Violating:** A report leads with a session diary or removes useful qualifications to meet a line count.
 
-Explain the current design, rationale, and relevant rejected alternatives.
-Update outdated descriptions; Git holds the change history.
+**Detailed rules:**
 
-## Structure
+- Lead with the purpose or outcome, then only necessary context and evidence. Give the shortest natural explanation that preserves understanding and action.
+- Keep one concern per section and connected reasoning in paragraphs. Lists express parallel items; tables compare; callouts mark exceptions. Do not disguise overload with formatting.
+- Use concrete nouns, active verbs, familiar language and one term per concept. Define unfamiliar terms on first use.
 
-Use scan-friendly structure for distinct concerns and paragraphs for connected
-arguments. Use lists for parallel items, tables for comparisons, and callouts
-for exceptional information. Do not force prose into a harder-to-read form.
+## Precise evidence and status
 
-Keep headings descriptive and sections proportionate to their content. Put the
-main point early. Examples should clarify a rule or decision rather than repeat
-it.
+Claims retain the evidence and qualifications that determine what a reader may conclude.
 
-## Links
+**Covers:** Claims, qualifications and maintained decisions.
 
-Place each link inline where the referenced idea appears and explain why the
-target matters. Do not append `Related`, `Links`, or `References` collections as
-a substitute for those connections. A craft or publication may still require a
-formal bibliography for cited evidence.
+**Applying:** A note distinguishes an agreed plan from source inspection and an authorized live acceptance.
 
-## Diagrams
+**Violating:** A green offline build is described as a successful real deployment.
 
-Use labels that are clear at reading size, preferably one or two words when meaning
-remains intact. Label relationships with verbs stating what flows, depends,
-calls, owns, or changes. Keep diagram terms consistent with surrounding text.
+**Detailed rules:**
 
-## Status and decisions
+- Connect evidence to each material claim and an action to its purpose. Keep uncertainty or limitations that affect the conclusion.
+- Existing means observed behavior or published authority; Agreed means an accepted direction with named scope and authority; Open means a proposal or unresolved dependency with its resolver.
+- Never present an unreviewed change as agreed or source work as live acceptance. Update the owning status in place when it changes.
 
-Keep these states distinct:
+## One connected explanation
 
-| State | Meaning |
-| --- | --- |
-| Existing | Observed current behavior or an already published authority; name the evidence. |
-| Agreed | An accepted decision or committed direction; name its authority and scope. |
-| Open | An unresolved question, proposal, or dependency; name what will resolve it. |
+Each point appears once, connected to its evidence and owning source.
 
-Do not present a proposal as current behavior, an unreviewed change as agreed,
-or completed source work as live acceptance. When a state changes, update its
-owning source instead of leaving competing descriptions.
+**Covers:** Conciseness, references and diagrams.
+
+**Applying:** A paragraph links a neighboring concept exactly where it explains a dependency.
+
+**Violating:** A document repeats another owner’s detail then appends an unconnected Related list.
+
+**Detailed rules:**
+
+- State each point once; remove filler, repeated context and recaps. Use descriptive headings and proportionate sections, never compressed jargon.
+- Place links inline where their idea matters and explain their role. Formal bibliographies remain valid for cited evidence; link collections are not a substitute for connected explanation.
+- Diagram labels remain legible at reading size. Edges use verbs stating flow, calls, dependency or ownership; terms match surrounding prose.
+- Examples demonstrate a decision or failure rather than repeating the rule. Maintained-document ownership and history belong to [[Agentic Documentation System]].

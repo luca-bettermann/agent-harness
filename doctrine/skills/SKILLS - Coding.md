@@ -1,169 +1,68 @@
-## Boundary
+Owns implementation and behavior tests inside a settled design. [[SKILLS - Architecture]] owns structural decisions; [[SKILLS - Interfaces]] owns published crossings and verification ownership. [[SKILLS - SSOT and Single Pipeline]] supplies the authority gate, and [[Agentic Documentation System]] owns context files and comments. Repository instructions own native tooling.
 
-This skill owns implementation craft. `CLAUDE.md` owns Git, safety, and
-cross-medium SSOT; [[SKILLS - Architecture]] owns design decisions and dependency
-boundaries. Code owns behaviour, `schema.py` / `constants.py` own cross-module
-vocabulary, and `*_CONTEXT.md` owns the as-built module map. Every structural
-change first passes [[SKILLS - SSOT and Single Pipeline]]. Documentation,
-reviews, and user-facing text follow [[Writing Guide]].
+## Minimal implementation
 
-## General
+The implementation satisfies every accepted requirement with the smallest clear design that serves it today.
 
-- Inspect local instructions, status, and the touched dependency surface first.
-- **Trace symbols with the language server, not grep** — for usages, reader-sets, and zero-readers / dead-code proofs use LSP **find-references** / go-to-definition (pyright is the server; the tools are on-demand — reach for them). grep is a cross-check, not the proof: it silently misses aliased imports, re-exports, and dynamic access. Symbols → LSP; text/strings → grep.
-- Prefer deleting or consolidating over adding another path. Leave no dead code,
-  compatibility shim, fallback, or TODO unless explicitly approved.
-- Run focused tests while iterating and the repository's full gates before
-  handing off a structural or release-facing change.
-- Show the resulting diff and validation evidence before committing.
-- Edit surgically: a targeted edit over a rewrite whenever the result is the same.
+**Covers:** Scope, reuse, deletion and the code-level application of [[AGENTS#2. Global principles|Minimal design and Adopt before build]].
 
-## Implementation principles
+**Applying:** The builder diagnoses the failing path before editing, identifies the whole defect class and its sibling sites, then fixes the shared cause and adds one regression test that catches every affected case.
 
-- Implement every accepted requirement; do not silently narrow it.
-- Refactor production code and its supporting tests, fixtures, validators and
-  workflow together. Within the approved change, remove redundant mechanisms
-  and incidental coupling so the next change is cheaper. Preserve valuable
-  behavioural protection and acceptance requirements; defer unrelated cleanup.
-  Lead refactors with deletion of duplicate responsibilities and mechanisms;
-  report what disappeared and justify necessary growth, without a line quota.
-- Apply the authority map, reuse audit, mode-as-data rule, and deletion ledger
-  from [[SKILLS - SSOT and Single Pipeline]] before adding another path or
-  abstraction.
-- Reuse one kernel across CLI, API, UI, and automation surfaces. Interfaces may
-  adapt input/output but never reimplement the workflow.
-- Separate observed facts from policy decisions and presentation.
-- Make state changes explicit and ordered: preflight, commit, postflight. An
-  interrupted operation either resumes idempotently or has one obvious cleanup.
-- Split modules when responsibilities or change reasons diverge; ~500 lines is a
-  review prompt, not an automatic abstraction.
+**Violating:** A patch treats the first symptom before diagnosing its cause, leaves sibling cases broken, or silently drops a difficult accepted requirement to make the diff smaller.
 
-## Security scope
+**Detailed rules:**
 
-Basic, low-cost security only. Do not add speculative hardening, elaborate
-security machinery or security-only review gates beyond that scope. Remove
-disproportionate existing mechanisms when their code is touched, folding any
-necessary basic protection into the existing owner. Exposure of a disposable
-synthetic test token is not a release blocker. Keep real credentials out of Git
-and public output; this rule does not remove data-integrity, lifecycle or
-physical-system protections governed by `AGENTS.md`.
+- Inspect instructions, worktree status and the touched dependency surface first. Implement every accepted requirement; do not silently narrow it. Preserve unrelated edits and prefer a targeted edit when it achieves the same result.
+- Reuse the existing implementation first. Within owned code, consider the standard library, an installed dependency and a mature framework before writing new code. This order never justifies rebuilding solved infrastructure from standard-library parts; Architecture owns that subsystem decision.
+- Add no speculative abstraction, configuration, scaffold or future reader. Every addition names a current consumer. Never trade readability for fewer lines.
+- Change production code, tests, fixtures, validators and workflow together within scope. Remove duplicate responsibilities while preserving behavioral protection; defer unrelated cleanup. Explain necessary growth by the requirement it serves.
+- Apply SSOT's authority map, reuse audit and deletion ledger. Trace repeated defects or misplaced responsibilities through Architecture and Work instead of patching consumers independently.
+- Preserve integrity, identity, lifecycle and physical-safety guarantees. INSTANCE sets the basic security scope; do not add speculative hardening or security-only gates. A disposable synthetic test token is not a release blocker. Real credentials remain subject to AGENTS.
 
-## Testing
+## Tests prove behavior
 
-Tests pin behaviour at public seams and derive everything else. Debt comes from what a test couples to, never from its count. Ranked by leverage per line of debt:
+A test establishes a named guarantee only when its oracle, inputs and bound environment can expose the claimed failure.
 
-1. **Law tests** — a property for all inputs: encode∘decode is identity, two clean imports are equal, rebuild equals stored, redelivery is idempotent, planned equals executed. One test covers every field, present and future.
-2. **Stateful model tests** — for a lock, lease, custody or settlement boundary: one randomized model over its operations (acquire, release, interrupt, recover, cancel …) asserting the ruled invariants on every interleaving. The model is the spec written once; it finds interleavings nobody enumerated.
-3. **Producer-bound fixtures** — a consumer consumes the real shipped artifact, generated by the producer's own generator behind a regenerate-and-compare gate; never hand-written, never edited by hand. Reviewing a cross-boundary change requires opening the other repo's side of the seam.
-4. **Journeys** — one committed flow per surface, both navigation directions, from those fixtures; the UI's only behavioural oracle. Screenshots are evidence, never asserts.
-5. **Named counterexamples** — one ruled behaviour each, as executable documentation, typically five or fewer per boundary; the name states the invariant as a sentence (`test_a_stale_release_cannot_clear_another_operations_hold`).
+**Covers:** Laws, models, counterexamples, fixtures, inverse evidence and environment fidelity.
 
-Everything else is debt and dies when touched: example tests per field, tests reaching private helpers or asserting call order, hand-typed dicts, mocks that accept any signature, repeated harness setup, source-text or AST asserts, permanent mutation tests. Mutation is the reviewer's act — prove the committed test bites, then discard the probe.
+**Applying:** A test asserts the expected status for its intended nonempty input set; an inverse changes only the condition whose refusal it claims to prove. An injected clock or an explicit join proves timing or completion without making the verdict depend on host speed.
 
-Rules: tests import only public seams (contract modules, HTTP, CLI, files on disk); one harness per boundary, shared as a fixture; two tests with one invariant means one dies; the inverse (absence, mismatch, interruption, duplicate input, wrong authority) lives inside the law or the model, not in a case list; a boundary needing more than one law or model test plus a handful of counterexamples is a contract too large — split the contract, not the test file. Every default code path is executed by at least one test. pytest functions, not unittest classes. **Refactor as you go:** every task that touches a test file leaves it in this shape and reports the invariant table (test → invariant owned) with its deltas; review refuses a duplicate invariant, a structural pin, or a fixture or double not bound to its producer or to the real callable's signature.
+**Violating:** A check accepts any status except 403, including 500, or an unrelated input error makes an inverse fail before the condition it claims to test.
 
-## Code Style
+**Detailed rules:**
 
-- Use functions for stateless transformations and classes where state and
-  lifecycle share an invariant. Imports at the top of the file.
-- Private `_name` for internal helpers; favour composition, subclass only for a genuine is-a; no getters/setters
-- **Hard constraints are structural** — enforce via bounds / construction, not penalties
-- **No silent failures** — fail loud at integrity, identity, lifecycle, and safety
-  boundaries, naming the offending value and the next action. Warn only when
-  proceeding is genuinely safe.
-- **No silent nulls on lifecycle gates** — a missing status, identity, promotion, invalidation, or safety value always logs the cause before failing closed
-- Defaults and site values have one inspectable owner; enums or typed constants
-  replace duplicated contract strings.
-- **Lift cross-module / external-contract constants to one prominent module** — anything crossing a module boundary or matching an external contract (field names, feature codes, schema codes, device IDs, default lists) goes in `<package>/schema.py` or `constants.py` at the top of the tree, not buried in `_shared/`. Class-namespace them (`ExternalField.VALUE`) so call sites self-document; every reference imports, never duplicates. In-module algorithm constants stay at their use site.
-- **Naming follows domain concepts** — problem-domain terms, not implementation details; general names for general concepts
+- Prefer laws such as roundtrip equality, rebuild equality and idempotence, then stateful models with a named oracle, then behavior counterexamples. Assert guarantees rather than private structure or call order. Use pytest functions, not unittest classes.
+- Prove a denominator exists and covers the intended set before applying every-item predicates. Assert the exact expected outcome, including status and refusal meaning. Cover absence, mismatch, interruption, duplicate input and wrong authority within the guarantee that owns them.
+- Show the inverse failing before the fix and passing after it. It must fail for the reason it claims; an earlier unrelated refusal is not proof. Use a temporary mutation to show a committed guard bites, then discard the probe.
+- Use producer-owned, signature-bound support at crossings under Interfaces. Focused internal tests are allowed when a local guarantee earns maintenance. There is no fixed case quota or blanket public-import rule for repository-local tests.
+- Keep one harness per actual boundary. Remove duplicate invariants, permissive mocks, copied generators and source-text or syntax-tree assertions that merely mirror implementation. Do not put a commit SHA in a fixture.
+- A test proves only the environment it actually binds. Use the documented interpreter and configuration, selected daemon, reachable address, real file ownership and permissions, and every required binding. Never print credentials. Repair fixture assumptions at their owner; never weaken production policy to make a fixture pass.
+- Installed-release witnesses consume shipped archives and committed locks, including the complete dependency and image closure. Mutable checkouts, ignored caches and ambient host tools do not represent an installed release.
+- Do not use wall-clock bounds for test verdicts. Preserve timing and completion guarantees with injected clocks, controlled delays, readiness or joins; host speed must not decide correctness. A deadline bounds only the work it owns. Independently timed work keeps its own timeout instead of consuming the caller's budget; deadline semantics belong to the owning contract.
+- Await typed refusal or status instead of a blind timeout. Assert public error meaning without obsolete narrower exception pins. Keep byte equality, custody and identity assertions strict when repairing environment faults.
+- Exercise every default behavior path. Code defaults apply equally in CI and locally; do not add a CI-versus-local branch to application behavior.
+- Local diagnostic runs collect all failures; acceptance candidates remain strict.
+- Measure run frequency separately from suite size. Slow native tests remain unless a cheaper witness proves the same guarantee. Interfaces owns verification scheduling.
+- Report each touched test and its invariant, with additions and deletions. Duplicate invariants, structural pins and unbound doubles are review refusals. Test count alone proves neither coverage nor debt.
 
-## Projection & display SSOT
+## Readable implementation
 
-The server/projection layer owns every vocabulary, derivation rule, and
-affordance a display surface consumes. A UI never keeps a second copy of a list
-that has a canonical source — state vocabularies, class/role/operation id sets,
-colors, naming rules, byte-ownership or lineage policy all arrive in the
-payload, never re-typed client-side.
+Code makes domain meaning, state changes and failure behavior apparent to its next reader.
 
-- **Emit envelopes, not bare ids** — a chip or control renders a served
-  `{id, label, tone}` / `{label, enabled}` computed at the projection; the
-  client renders it verbatim and holds no branch ladder over raw ids.
-- **Display mapping is the one exception**: a one-way map over stable ids, with
-  a readable fallback for unknown ids **and** a test asserting its keys ⊆ the
-  served vocabulary. A map missing either is a violation, not a mapping.
-- **Unknown values render loud** — an unrecognized state shows as a distinct
-  "unknown" element; never filtered out, never defaulted to a benign state.
-- **Fixtures derive from the contract layer** — generated by the real
-  projection/reader against a synthetic root, or validated against the contract
-  classes in tests. A hand-typed fixture is a drift vector that hides breakage.
+**Covers:** Functions, classes, constants, configuration, semantic tracing and repository hygiene.
 
-## Working-tree hygiene
+**Applying:** A stateless transformation is a function, while a class keeps state and its lifecycle invariant together.
 
-Every repo needs a `.gitignore` covering everything that should stay local — nothing transient, generated, or machine-specific in a commit. Default categories:
+**Violating:** Dense expressions hide ownership or repeated external strings drift across modules.
 
-- **Venvs / caches**: `.venv/`, `__pycache__/`, `*.pyc`, `.pytest_cache/`, `*.egg-info/`, `build/`
-- **Local state / runtime**: `logs/`, `local/`, project-local data dirs and session files
-- **Generated artifacts**: `plots/`, `dev/plots/`, `dev/data/` — *except* deliberately-tracked paper artifacts (e.g. `concepts/plots/`)
-- **Editor / OS**: `.vscode/`, `.idea/`, `.DS_Store`, `Thumbs.db`
+**Detailed rules:**
 
-If an ignored category appears in `git status`, extend `.gitignore` rather than
-dismissing it. Preserve unrelated user changes. Branching/landing policy lives in [[SKILLS - Workflow]];
-sync hygiene in CLAUDE.md → *Git & Sync*.
-
-## Python Environment
-
-- `uv` per repo (`uv venv`, `uv pip install -e ".[dev]"`, tests via `.venv/bin/pytest`) — unless the repo documents its own environment (e.g. conda for native deps like OCC); **the repo's documented env is authoritative**
-- **Cross-root dependencies use Git refs, never path dependencies** — a repository owned by another agent enters dependency configuration as a pinned Git reference (`tag` for release, `branch` for development). Editable path dependencies stay inside one root. See `AGENTS.md` section 4.
-- Install uv if missing: `curl -LsSf https://astral.sh/uv/install.sh | sh`. `sudo` installs → ask the user
-
-## Type Checking
-
-Pylance-clean — no errors. Check with `.venv/bin/pyright`. `# type: ignore` only when Pylance is wrong.
-
-## Plots & Console
-
-Colormaps, figure standards, and visual rules live in [[SKILLS - Visual Identity]]. Console output is minimal, informative, and fixed-width; verbose/debug output goes to logs. `INSTANCE.md` may name a more detailed console-output authority.
-
-## Configuration API
-
-- One way to configure each concern — no fallback methods or convenience wrappers
-- Group related settings into explicit named methods; internal constants are named params with defaults (readable, not user-facing knobs)
-
-## Docstrings and comments
-
-- Default to no comment or a one-line docstring.
-- Explain a non-obvious invariant or load-bearing reason, never the signature or
-  next line of code.
-- Describe current code in present tense. Do not mention a task, session, date,
-  prior implementation, or change narrative; Git owns why it changed.
-- Move module design to `*_CONTEXT.md`. A multi-line inline explanation needs a
-  genuinely local subtlety.
-
-## Repo docs derive, never restate
-
-A doc that enumerates a code-owned fact (verb tables, member lists, module
-inventories) is generated with a regenerate-and-compare gate — the fixture
-idiom applied to docs — or replaced by a link to the owner. Hand-restated
-enumerables are the drift vector behind every docs-sweep failure. One doc home
-per topic; every other mention links.
-
-## Context Files
-
-Each meaningful package boundary has a `*_CONTEXT.md` so an agent can understand
-the current structure without reading every module.
-
-- Root gets `PROJECT_CONTEXT.md`, opening with a four-line **boundary header** before the module tables: **Purpose** (one line + link its knowledge concept), **Owns**, **Out of scope → who**, **Depends on** (link the dependency-map authority named by `INSTANCE.md`, don't restate it)
-- A meaningful subpackage uses `<FOLDER>_CONTEXT.md`; trivial asset/helper
-  folders do not need filler documentation.
-- Format: purpose, a Mermaid relationship diagram when useful, a module/class
-  identity table, and only load-bearing invariants or open risks.
-- Update with structural changes and keep under 60 lines.
-
-### Diagrams
-
-The **detailed** module/import map is *generated*, not hand-drawn (per *Repo docs
-derive* above — a `structure.generated.md`, CI-regenerated, or a link to the owner).
-`CONTEXT.md` keeps **one** curated big-picture Mermaid (`graph TD`, plain boxes,
-labeled arrows — the mental model, not every edge), the module-identity table, and
-prose for invariants/risks. Intended cross-repo layering lives in the KB note,
-enforced with import contracts where valuable.
+- Favor composition and subclass only for a genuine is-a relationship. Put imports at the top, prefix private helpers with `_`, and avoid mechanical getters and setters. Split responsibilities when they diverge; roughly 500 lines prompts review rather than automatic abstraction.
+- Enforce hard constraints through bounds or construction. Fail loudly at integrity, identity, lifecycle and safety boundaries, naming the cause and next action. Missing lifecycle state is never silently null. Warn only when proceeding is safe.
+- Import shared vocabulary from a prominent schema or constants module. Namespace external fields so callers reveal their meaning. Algorithm constants used within one module stay at their use site.
+- Use domain names and one configuration method per concern. Group related settings in named methods; keep internal defaults inspectable without turning them into user knobs or fallback wrappers.
+- Use language-server references and definitions to establish symbol readers, including aliases and re-exports; inspect dynamic paths where needed. Text search locates strings and cross-checks findings but cannot alone prove zero readers.
+- Use the repository's formatter, linter, interpreter and type checker. Python must be Pylance-clean; `# type: ignore` is allowed only when the checker is wrong. Repository-native environments override generic defaults.
+- Ignore environments, caches, local state, generated output and editor files. Deliberately tracked publication artifacts are an exception. Extend incomplete ignore rules instead of dismissing leaked state. Resource cleanup follows AGENTS.
+- Comments and context files follow Documentation System; plots follow Visual Identity. Console output is concise, informative and fixed-width, with debug detail in logs; INSTANCE may link a detailed console authority.
+- Show the diff and validation evidence before committing. Git authorization follows AGENTS and the current task.

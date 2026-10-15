@@ -1,76 +1,51 @@
-Method for papers, reports, and other evidence-bearing written deliverables.
-Use with [[SKILLS - Literature Review]] for sources, [[Agentic Documentation System]]
-for evergreen knowledge, and [[SKILLS - Visual Identity]] for figures.
-[[Writing Guide]] owns the general language and structure used by every deliverable.
+Owns evidence-bearing papers and reports, contribution argument, revision and submission. Literature Review owns source discovery and notes; Writing Guide owns general prose; Documentation System owns facts and history; Visual Identity and the current venue own figure presentation. INSTANCE binds language, venue, tooling and templates.
 
-## Instance bindings
+## Evidence bounds claims
 
-`INSTANCE.md` owns target venues, language variant, manuscript template,
-bibliography style, collaboration host, storage paths, and any project-specific
-terminology. Check the current venue's author instructions at submission time;
-do not freeze them into generic doctrine.
+The manuscript claims no more than its evidence establishes.
 
-## Claims and voice
+**Covers:** Contribution, limitations and source attribution.
 
-- State what the work does, what the evidence supports, and what remains a
-  limitation. Avoid novelty and significance claims that the evidence does not
-  establish.
-- Keep one spelling and terminology convention within a deliverable, using the
-  instance binding or venue rule as authority.
-- Remove citation piles that have no claim-level purpose.
+**Applying:** A result states what was tested and its limit; each citation supports an exact claim.
 
-## Structure
+**Violating:** Novelty or live success is inferred from an untested design or a pile of unrelated citations.
 
-Choose the structure required by the deliverable and venue. A research article
-normally establishes the challenge, positions related work, states the
-contribution, explains the method, presents results, and separates discussion
-from conclusion. The introduction must make the work understandable without
-assuming the reader knows an earlier publication.
+**Detailed rules:**
 
-Keep the contribution statement explicit and early. Use related work to compare
-external evidence; describe the system and prior project work where they are
-methodologically relevant. State research questions in the form the venue and
-discipline expect.
+- State what the work does, what evidence supports and what remains a limitation; no unsupported significance or novelty claim.
+- Use one spelling and terminology convention for the deliverable under instance or venue authority. Explain unfamiliar project material without relying on an earlier paper.
+- Cite at the supported claim with a reason; verify identifiers, publication details and keys. Follow self-citation and anonymous-review rules.
 
-## Figures
+## A deliverable has one argument
 
-- Every figure answers a specific question and is cited in the text.
-- Follow [[SKILLS - Visual Identity]] and the instance-supplied style module.
-- Prefer vector output for diagrams and plots; use raster output for images that
-  require it and meet the venue's resolution rule.
-- Make captions understandable without relying on the surrounding paragraph.
-- Keep diagram source separate and reproducible where the document system
-  supports it.
+Each section and figure advances the deliverable's stated question and contribution.
 
-## Citations
+**Covers:** Article structure, figures and report continuity.
 
-- Cite at the exact claim supported by the source.
-- Verify persistent identifiers, publication details, and cite keys before
-  submission.
-- Keep a clear reason for every citation.
-- Follow the venue's rules for self-citation and anonymous review.
+**Applying:** The introduction establishes challenge, contribution and question; every figure answers a named question and is cited.
 
-## Revision
+**Violating:** Related work describes the entire internal system, or a report copies repository facts as another live owner.
 
-Track each reviewer comment to a response and a manuscript change. Produce a
-reviewable diff with the instance-supplied document tooling. Preserve the final
-response record with the submitted version.
+**Detailed rules:**
 
-## Submission check
+- Choose venue and deliverable structure: challenge, external related evidence, explicit early contribution, method, results, discussion and conclusion. Prior system work appears where methodologically relevant.
+- Research-question form follows the instance or discipline. General writing is inherited, not rewritten in this skill.
+- Figure captions are understandable independently; use reproducible source and the venue-required vector or raster format and resolution through Visual Identity.
+- Each recurring report has one current status and links its predecessor and code and concept facts. A submitted version becomes historical under instance retention.
 
-- [ ] Current author instructions checked for length, format, references, and figures
-- [ ] Draft-only annotations removed
-- [ ] Every citation key resolves
-- [ ] Figures meet format and resolution requirements
-- [ ] Captions are self-contained
-- [ ] Language and terminology match the selected convention
-- [ ] Funding, acknowledgements, conflicts, and contribution statements are complete
-- [ ] Co-author or reviewer approval is recorded
+## Submission is traceable
 
-## Reports
+The submitted version retains its approvals, responses and compliance with current venue requirements.
 
-Treat each recurring report as its own deliverable with one current status.
-Maintain narrative continuity by linking its predecessor rather than copying
-technical detail. Repository documentation and evergreen concept notes retain
-their own facts; the report references them. Once submitted, a report becomes a
-historical record under the retention policy named by `INSTANCE.md`.
+**Covers:** Current venue constraints, approvals and revision response.
+
+**Applying:** Every reviewer comment maps to a response and visible manuscript change; the final approved version is preserved.
+
+**Violating:** An old template substitutes for checking current author instructions or unresolved keys survive submission.
+
+**Detailed rules:**
+
+- Check current author instructions for length, format, bibliography and figures at submission. Do not freeze venue rules into generic doctrine.
+- Remove draft annotations; verify every key, caption, figure format and resolution and selected terminology; complete funding, acknowledgements, conflicts and contributions.
+- Record co-author and reviewer approval. Produce the reviewable diff with current instance tooling and preserve final response with submitted version.
+- Keep working source, evidence synthesis and submitted manuscript as distinct layers; no duplicate concept archive.

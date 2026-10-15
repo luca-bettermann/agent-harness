@@ -1,92 +1,84 @@
-How a review is structured when it happens in chat. That reviews and their sign-off happen in the conversation, not on the board, is the rule in [[tasks-and-collaboration]] → *Review and completion*; this note is the shape each one takes, so a review lands as a scannable, self-contained digest instead of freeform prose.
-
-Three review types recur across the work lifecycle, one template each. A template is a **ceiling on structure, not a floor**: reach for the full table only when the work warrants it, and drop to a sentence plus a link when it doesn't. Trivial work never enters review at all — it goes straight to `cleanup`.
+[[SKILLS - Work]] owns when review occurs, who performs it and who accepts it. These shapes are ceilings, not obligatory empty tables. Writing Guide governs the prose; Architecture, Interfaces, SSOT and Coding supply the technical criteria.
 
 ## Decision / design review
 
-An unmade architectural or methodological choice an agent escalated. The operator picks a direction.
+Open with the high-level problem, only the technical detail needed to understand the choice, and a concrete example. Spell out abbreviations and explain unfamiliar names. Include not building when viable; never invent an alternative to fill a table.
 
-Every decision presentation opens with three parts, in this order, before any
-option table (the problem must be understandable before the options are):
+Decision: <the choice> · Constraint: <why it matters now>
 
-1. **High-level context** — what part of the system this concerns and why it
-   surfaces now, in plain language.
-2. **Technical detail** — only as much as the decision actually needs; never
-   more complicated than the choice itself.
-3. **Practical example** — a concrete case, code snippet, or config fragment
-   showing what the choice changes.
-
-No abbreviations in a decision presentation: spell terms out and gloss every
-codename or symbol on first use.
-
-**Decision:** *what must be decided, one line* · **Constraint / why now:** *the forcing context*
-
-| Option | Approach | Pros | Cons |
+| Option | Approach | Benefit | Cost and debt |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| <name> | <how it works> | <consumed outcome> | <standing burden> |
 
-**Recommendation:** *which option, one-line why* · **Ask:** pick / adjust / need more.
+Recommendation: <choice and reason> · Ask: <pick, adjust or request more evidence>
 
 ### Design assessment — mandatory for any mechanism-adding decision
 
-A decision that adds a **mechanism** — a store, service, background job, lock,
-cursor, document format, or cross-repository seam — carries this table before
-it is ruled. Write one matrix with fields as rows and decisions as columns; use
-a few words per cell and close with the verdict.
+Work owns this gate and its reassessment rule. Use fields as rows and decisions as columns, including an alternative that reuses an existing owner, computes from an existing store or adopts a mature tool.
 
-| Field | What goes in |
-|---|---|
-| Decision | one sentence |
-| Impact | what it enables that nothing existing provides, and who consumes it |
-| Effort | S / M / L (one sitting / one day / multi-day), repos touched, increments |
-| Mechanisms added | count them by name — the list *is* the debt |
-| Standing debt | what must be maintained for ever (schema, cursors, migrations, fixtures); what dies |
-| Resolve-instead alternative | at least one "compute it from an existing store" or "reuse X" option, with its effort and debt — see [[SKILLS - Architecture]] on single source of truth for derived data |
-| Verdict | proceed, or **re-open** with the operator |
+| Field | Proposed option | Simpler alternative |
+| --- | --- | --- |
+| Decision | <one sentence> | <one sentence> |
+| Impact | <new capability and its consumer> | <how the requirement is met> |
+| Effort | <S: one sitting; M: one day; L: multiple days; repositories and increments> | <effort> |
+| Mechanisms | <names and count> | <names and count> |
+| Standing debt | <what remains and what retires> | <what remains and what retires> |
+| Verdict | <proceed or reassess, with reason> | <reason> |
 
-**Re-open rule:** effort L, or two or more new mechanisms, for an impact an existing store or function already provides → the decision goes to the operator in chat before anything is built; an agent never rules it alone ([[tasks-and-collaboration#Build or escalate]]).
+### Complexity ledger — mandatory for every package, before build and after
 
-**Worked case:** a stored summary duplicates records already held by the
-authoritative database. It would add a format, lock, cursor, and custody rule.
-A query over the existing records provides the same result with one derivation
-and no stored duplicate. Verdict: re-open and prefer the query unless measured
-read cost proves a materialisation necessary.
+For Work's package ledger, add a row for each new module, class, command, route, persisted format, dependency, environment variable or harness engine, and for any change above 50 net production lines. Do not fill rows for ceremony.
+
+| Addition | Benefit and consumer | Simplest alternative | Debt | Direction | Projection and measured delta | Verdict |
+| --- | --- | --- | --- | --- | --- | --- |
+| <name, files and mechanisms> | <landed caller or accepted plan line> | <not doing it, deleting it, or adopting an existing tool> | <standing maintenance> | <agreement with concept and scope> | <range before; per-repository measurement after> | <keep, simplify, delete or re-project> |
+
+A benefit names what fails without the addition, who observes it and how often. An addition without a consumed benefit is speculative. A foundation may precede its callers only when an accepted plan names those consumers.
+
+Use one classifier for production, tests, test harness, fixtures, contract data, locks and documentation throughout the programme. Link that classifier from the task. Measure moved code across both repositories and credit a deletion to exactly one package. Judge each package with its programme slice, and update the stream's running programme delta at every integration.
+
+Lines measure structure, not density. Savings remove concepts, duplicates, unconsumed elements or custom infrastructure a library replaces. Packed lines and reduced readability are never a cut.
+
+Return unexplained production drift beyond a projected range, a sign flip, an unconsumed addition or an unnamed new mechanism. Judge the reason in context rather than inventing a fixed line threshold. The orchestrator escalates to the operator when programme production materially exceeds summed projections, roughly a fifth or more, or a package that promised a negative delta becomes positive. The proportion is a judgment guide, not an automatic allowance.
+
+Re-price only after attempting the planned cuts. Give the assumption, the requirement demonstrated at file and line, and why the simpler shape fails; the reviewer rules each re-price. Hunt new cuts before allowances. Hold a planned cut only for a concrete requirement or guard it would break, never effort or taste. Principle violations are repaired even when the repair adds code. Work owns routing new findings into the plan. Coding owns test budgets and inverse evidence; Interfaces owns compatibility policy.
 
 ## Implementation plan review
 
-The settled approach, before build. The operator signs off.
+Implements: <accepted decision link> · Success criteria: <observable completion>
 
-**Implements:** *the settled decision — link* · **Success criteria:** *what "done" means*
-
-| # | Step | Scope / files | Risk | Tech debt |
+| Step | Scope, files and owner | Dependency | Risk | Debt and deletion |
 | --- | --- | --- | --- | --- |
-| 1 |  |  |  |  |
+| <step> | <scope> | <authority> | <failure> | <delta> |
 
-**Out of scope:** *what this deliberately doesn't touch* · **Ask:** approve / adjust.
+Out of scope: <non-goals> · Plan review: <evidence and verdict>
+
+## One end findings table
+
+Builder: <actual model> · Reviewer: <actual model> · Scope and heads: <exact identities>
+
+| ID | File:line and sibling sites | Defect class, failure and counterexample | Consequence | Owner and fix | Disposition and evidence |
+| --- | --- | --- | --- | --- | --- |
+| <id> | <source> | <demonstrated failure> | <why it matters> | <owner> | <RETURN, closed or open, with scope> |
+
+Delta verification: <the required fixes checked, consequences and verdict>
 
 ## Result review
 
-Finished, risky or consequential work, presented via its review link — the
-card does not move for review. The operator ships or returns it.
+What changed: <outcome and reason> · Links: <diff, commit and existing evidence>
 
-**What shipped:** *one line* · **Why it's in review:** *the risk/consequence* · **Links:** *diff / commit / compare*
-
-| Criterion | Expected | Actual | Evidence |
+| Criterion | Expected | Actual and limits | Evidence |
 | --- | --- | --- | --- |
-|  |  |  |  |
+| <criterion> | <observable result> | <result> | <existing pointer> |
 
-**To verify:** *what the operator should check* · **Decision:** accept → `cleanup` / return → `in progress`.
+To verify: <remaining operator checks> · Decision: <accept or return>
 
 ### On evidence — cite, don't manufacture
 
-Evidence is a **pointer to something that already exists** — a commit, a test-output line, a log excerpt, a screenshot already produced in the course of the work — never a new artifact made to fill the table. If supplying it would take fresh work, that is the signal the criterion was never actually verified during the build; fix *that*, don't do the work just to populate a review. Evidence is **proportional to risk**: a link is enough for most rows, deeper proof only for the genuinely high-consequence ones. And because a result review happens only for consequential work in the first place, the cost is bounded to the few results that already earn it.
+Point to code, test output, logs or rendered evidence already produced in the work. Never manufacture an artifact to fill a table. Missing evidence means the criterion remains unverified; complete the work rather than decorate the report. Depth follows consequence. Review acceptance does not move the card or prove merge and promotion.
 
 ## Incident post-mortem (optional)
 
-Not a lifecycle gate, but retrospectives recur with a stable shape. Use when something broke and the lesson is worth keeping.
+What happened: <failure> · Root cause: <observed cause or explicit hypothesis> · Fix: <owner and action> · Prevention: <existing owner and accepted limit>
 
-**What happened:** *the failure, one line* · **Root cause:** *the actual cause, not the symptom* · **Fix:** *what was done* · **Prevention:** *the cause-fix, and where it is now encoded*
-
----
-
-Deliberately not templatized: open research and strategy exploration. Those are discussions, and a table would strangle them.
+Open research and strategy are conversations, not obligatory tables.

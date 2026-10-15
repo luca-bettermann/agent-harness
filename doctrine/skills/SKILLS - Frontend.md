@@ -1,57 +1,51 @@
-## Boundary
+Owns browser implementation, layout, journeys and rendered acceptance. [[SKILLS - SSOT and Single Pipeline]] owns served meaning. [[SKILLS - Coding]] owns implementation and test quality; [[SKILLS - Visual Identity]] owns visual standards, and [[Writing Guide]] owns interface language. INSTANCE names standing previews and browser tooling.
 
-This skill owns the workflow and craft for browser-facing surfaces — how they are designed, evidenced, reviewed,
-and accepted. [[SKILLS - Coding]] owns general implementation craft including
-*Projection & display SSOT*; [[SKILLS - Visual Identity]] owns visual
-standards; [[Writing Guide]] owns interface prose; each repo's `*_CONTEXT.md`
-owns its as-built structure.
+## Served meaning
 
-## Architecture
+A browser presents the domain meaning supplied by its authoritative projection.
 
-- **The server owns every vocabulary and derivation** — apply
-  [[SKILLS - Coding]] → *Projection & display SSOT* without exception:
-  envelopes not bare ids, no client-held lists, unknown values render loud.
-- **Pure view-model / thin DOM**: view logic is pure functions with Node
-  tests; the DOM layer only renders. Interaction state folds from data, not
-  from scattered flags.
-- **[[SKILLS - Coding]] applies to JS unchanged** — the module-size prompt,
-  Testing rules, and naming discipline are not Python-only.
-- **Gate parity with Python**: JS changes pass lint clean plus view-model
-  unit tests on the changed surface — syntax-clean is not a gate.
-- **Layout containers own placement; components own content.** Chrome lives
-  in docks/strips with shared tokens — no element positions itself with its
-  own fixed coordinates.
-- **Patterns portable, code not shared** across repos; palettes stay
-  per-authority.
-- **Fixtures are generated from the real projection or contract-validated,
-  with realistic identities** — fake-shaped values (repeated hex, stub
-  ports) hide broken links and layouts and are themselves a defect.
+**Covers:** Vocabulary, labels, enabled state, refusals and fixtures.
 
-## Evidence and review — the gates
+**Applying:** A control renders the projection's label and enabled state, including a distinct unknown state.
 
-Rendered work passes four gates, in order; none substitutes for another:
+**Violating:** A browser maintains its own operation list or infers eligible actions from path names.
 
-1. **Design settles in chat**; the settled spec in the card note is the
-   implementation source.
-2. **The implementer runs a committed headless JOURNEY flow per increment**
-   (using the instance- or repository-supplied browser driver): the canonical user journeys across BOTH
-   navigation directions and all layouts — chrome mounts/unmounts, scrub
-   and seek, window add/swap/close, link hrefs formed and pattern-valid,
-   tooltips present on the enumerated element list, no column overlap or
-   grid misalignment. **Spec-state PNGs alone are never sufficient
-   evidence** — regressions live in the unspecified states and in
-   interactions, which stills of specified states cannot show.
-3. **The reviewing agent drives the live preview personally** — the full
-   journey, interacting, before any human handoff. No preview link reaches
-   the operator before this pass.
-4. **The operator reviews the rendered result**; acceptance in chat.
+**Detailed rules:**
 
-Tooltip and affordance completeness is an enumerated checklist asserted by
-the journey flow — never a vibe. A claim of "all findings closed" is
-verified against the rendered surface, not the diff.
+- Consume typed envelopes under SSOT's projection rules. Do not reconstruct eligibility, lineage or vocabulary in the client. Display mappings follow that owner's rule.
+- Use producer-generated or contract-validated fixtures with realistic identities. Repeated fake identifiers and ports can conceal broken links and layouts.
 
-## Standing previews
+## Thin views
 
-`INSTANCE.md` names any standing preview surfaces and ports. Update the relevant
-preview before a review round; the reviewer's journey runs against it with
-realistic data.
+Presentation code separates interaction state, rendering and placement so each has one responsibility.
+
+**Covers:** View models, DOM updates, layout containers and components.
+
+**Applying:** A pure view function folds interaction data, and a layout container places reusable content.
+
+**Violating:** Scattered flags recreate a state machine or a component fixes its own screen coordinates.
+
+**Detailed rules:**
+
+- Use pure functions for view logic and keep the DOM layer focused on rendering and input. Fold interaction state from data instead of scattered flags.
+- Containers own placement; components own content. Use shared layout tokens for chrome, docks and strips instead of private fixed coordinates.
+- Apply Coding to JavaScript as to Python. Changed JavaScript passes lint and view-model tests; syntax checking alone is not a gate.
+- Patterns are portable, but shared code across repositories needs a justified public owner. Palettes remain with their existing authorities.
+
+## Journeys prove interactions
+
+Rendered acceptance demonstrates the complete user journey on the live surface before human handoff.
+
+**Covers:** Committed flows, preview review, affordance coverage and operator acceptance.
+
+**Applying:** The implementer runs the committed journey, then the reviewer drives the full journey on the updated live preview before handing it to the operator.
+
+**Violating:** Screenshots of selected states or a diff stand in for interactions across the complete journey.
+
+**Detailed rules:**
+
+- Settle design in chat and record the accepted specification in the task note. Work owns the review process.
+- The implementer runs the committed headless journey for every increment. Cover both navigation directions and all layouts, including mounting and unmounting chrome, scrub and seek, window addition, replacement and closure, link formation, tooltips and overlap.
+- Enumerate tooltips and affordances and assert that list in the flow. Apply Coding's denominator and exact-outcome rules; expected bytes and refusals follow actual artifact selection. Never suppress all browser errors or pin arbitrary variant numbers.
+- Update the standing preview with realistic data before review. The reviewer personally drives the full journey on that live preview before any human handoff. No preview link goes to the operator before this pass.
+- Verify closed findings against the rendered surface. The operator reviews the result and accepts it in chat. These gates remain distinct from verification ownership under Interfaces.

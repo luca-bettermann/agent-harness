@@ -15,11 +15,18 @@ Copy this file to `INSTANCE.md` in a private instance. Replace every placeholder
 - Team knowledge store: `<independent path or repository>`
 - Read-only context documents: `<path or none>`
 
-## Git and workflow
+## Landing transport
 
 - Hosting and review surface: `<for example, GitLab merge requests>`
 - Human authority for spend, design, review, and promotion: `<name or role>`
 - Release or deployment bindings: `<links to their existing authorities>`
+- Additional synchronization commands: `<commands required by this instance>`
+
+## Models and dispatch
+
+- Tier-to-model map: `<current model for each tier and vendor>`
+- Client recovery: `<client-specific recovery commands and wait bounds>`
+- Audit routing: `<models for enumeration, synthesis and cold review>`
 
 ## Agent extensions
 
@@ -37,10 +44,12 @@ schema or a rule outside that scope.
 | Writing and editing (`writing`) | [base](doctrine/Writing%20Guide.md) → [instance](INSTANCE.md) |
 <!-- END NATIVE SKILL ROUTES -->
 
-## Physical systems and secrets
+## Safety and security scope
 
 - Human owners for physical systems: `<links to the owning repository context files>`
 - Credential store: `<password-manager reference, never a credential value>`
+- Physical-safety scope: `<operating scale and required gates>`
+- Security scope: `<required protections and explicit limits>`
 
 ## Coding
 

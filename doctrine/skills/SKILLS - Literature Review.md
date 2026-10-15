@@ -1,84 +1,50 @@
-Workflow and conventions for literature discovery, assessment, synthesis, and
-tracking. Use [[Writing Guide]] for prose and structure, [[Agentic Documentation System]]
-for ownership and layers, and [[SKILLS - Academic Writing]] when evidence enters a
-manuscript.
+Owns discovery, source intake, assessment and cross-source synthesis. Writing Guide owns prose; Documentation System owns layers; Academic Writing owns manuscript integration. INSTANCE names baseline and library stores, manager, PDFs and templates.
 
-## Instance bindings
+## Sources own claims
 
-`INSTANCE.md` names the context-document store, per-source note store,
-synthesis-note store, reference manager, read-only PDF access, filename
-convention, and note template. Treat those as locations and tools, not as a
-second definition of this method.
+Every extracted claim remains traceable to the source that supports it.
 
-## Sources of truth
+**Covers:** Metadata, quotations, provenance and limits.
 
-- Published sources own their claims. Verify metadata and quote against the
-  source itself.
-- Per-source notes hold faithful metadata, extracts, highlights, and a short
-  relevance statement. They do not hold cross-source synthesis.
-- Synthesis notes own comparisons, themes, gaps, and contribution arguments for
-  one research question or deliverable.
-- Context documents may establish project baselines but can become stale; check
-  their declared date or revision before relying on them.
+**Applying:** A source note records verified citation metadata and page-located extracts, with a short relevance statement.
 
-## Access
+**Violating:** An abstract is treated as full-paper evidence or a stale baseline becomes an unqualified current claim.
 
-Use the instance-supplied reference manager and read-only document stores for
-the existing library. Use publisher APIs and open scholarly indexes for
-discovery and lawful full-text access. Credential values stay outside notes and
-prompts.
+**Detailed rules:**
 
-## Workflows
+- Verify metadata and quotations against published sources. Per-source notes hold faithful extracts and highlights and relevance, not cross-source arguments.
+- Check baseline dates and revisions. Use configured read-only existing library access and lawful publisher and index discovery. Secret handling remains AGENTS.
+- If full text is unavailable, report title, persistent identifier and relevance reason; do not infer findings from an abstract.
 
-### Curated-library intake
+## Separate intake and synthesis
 
-1. Read and annotate in the configured reference manager.
-2. Export or create one per-source note using the configured template.
-3. Link the note to every synthesis context that consumes it.
-4. Keep source summary in the per-source note; compare and argue only in the
-   synthesis note.
-5. Record open questions explicitly in the synthesis note.
+Source records preserve evidence while synthesis owns the argument across sources.
 
-### Discovery
+**Covers:** Evidence layer, comparison and durable notes.
 
-1. Search authoritative indexes and publisher sources against the stated review
-   question.
-2. Read the source deeply enough to assess the claims that matter.
-3. Check whether a per-source note already exists before creating one.
-4. If relevant, add the note, evidence extracts, and links to its synthesis
-   contexts. Ask the operator to add any required source file to the reference
-   manager.
-5. If full text is unavailable, report the title, persistent identifier, and
-   reason it may matter. Do not infer findings from an abstract alone.
-6. If irrelevant, create no note.
+**Applying:** One source note supports several synthesis contexts; each context compares claims at the source links.
 
-## Per-source notes
+**Violating:** Long paraphrases and implementation plans bury synthesis in an individual paper note.
 
-A per-source note contains:
+**Detailed rules:**
 
-- verified citation metadata and persistent identifier;
-- the abstract when its reuse is permitted;
-- concise evidence extracts or annotations with page locations;
-- a one- or two-sentence relevance statement linked to its synthesis context.
+- Read and annotate with the configured manager, export or create its source note using the configured template, and link its consuming syntheses. Search for an existing source note first.
+- A source note contains verified metadata and an identifier, permitted abstract, concise page-located extracts and one or two relevance sentences. Cross-source arguments and unlocated critique live in synthesis.
+- One synthesis note per research question, venue or deliverable owns scope, themes, gaps, contribution argument and explicit open questions; every material claim links supporting or challenging evidence.
+- Submitted or published output becomes historical under its retention authority. Filename and cite-key changes update their instance owner; methodology changes update this skill only when actually changed.
 
-Long paraphrases, cross-source arguments, implementation plans, and unlocated
-personal critique belong elsewhere.
+## Question-led discovery
 
-## Synthesis notes
+Discovery selects evidence for an explicit question rather than accumulating an unbounded library.
 
-Use one synthesis note per research question, venue, or reporting deliverable.
-State its scope, group evidence into a small number of themes, identify gaps,
-and state what the current work adds. Every material claim links back to the
-source notes that support or challenge it. Mark submitted or published outputs
-as historical records instead of silently deleting them.
+**Covers:** Search and manuscript handoff.
 
-## Manuscript integration
+**Applying:** Search authoritative indexes for the review question and keep only relevant evidence.
 
-- Use the cite key from the verified source record.
-- Place citations at the claims they support.
-- State why each citation is present; remove citations with no specific role.
-- Keep source evidence, synthesis, and manuscript prose as distinct layers.
+**Violating:** Every discovered title becomes a note, or citations enter a manuscript without a specific claim.
 
-When a filename, cite-key, or template convention changes, update its single
-instance authority and this skill in the same reviewed change if the method also
-changed.
+**Detailed rules:**
+
+- Search authoritative indexes and publishers against a stated question, then read deeply enough to assess material claims. Relevant sources get evidence plus links; irrelevant ones get no note.
+- Ask the operator for a needed reference-manager source file only when configured access cannot provide it. Do not create a second library.
+- Hand manuscript work verified source keys and evidence and distinct synthesis arguments; Academic Writing owns placement, submission and response tracking.

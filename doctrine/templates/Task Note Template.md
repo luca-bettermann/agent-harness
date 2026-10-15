@@ -1,32 +1,28 @@
 ---
 type: task
-stream:                    # empty in backlog; else the owning stream's name
-repos: []                  # participating repos by root folder
-blocked:                   # this task's own blocker, never the stream's
-handoff_from:              # optional — the scope that requested this deliverable
+stream:                    # Empty in backlog; otherwise the owning stream name.
+repos: []                  # Participating repository roots.
+blocked:                   # This task's blocker, not the stream's blocker.
+handoff_from:              # Optional scope that requested the deliverable.
 ---
 
-<!-- These fields are the whole contract; front matter is the one membership
-authority, so `stream:` must agree with the stream note's `Tasks:` list. The cap
-configured by `vault.toml` applies. Replace stale status in place — never append
-a session diary. -->
+<!-- Work owns membership, dispatch and retention. This template defines the fields. -->
 
 ## Scope
-<1–3 sentences: the problem, and what success looks like.>
+<The problem and intended outcome, in one to three sentences.>
 
 ## Success criteria
-- [ ] <observable, testable condition>
+- [ ] <An observable, testable condition.>
 
 ## Out of scope (optional)
-- <explicit non-goal>
+- <An explicit non-goal.>
 
 ## Packages
-<!-- The orchestrator slices the task into packages before dispatch; a builder executes exactly
-one and never re-slices. One package unless gates or owners are independent. -->
-1. **<package name>** — <what one builder carries end to end; the gates it must turn green>
-   - [ ] <increment: a completeness check, never an agent boundary>
-   Built by: <model, date> · Reviewed by: <model, date> · Cold-delta: <model, date>
+1. **<Name>** — <The outcome, scope and required gates.>
+   - [ ] <An increment used to check completeness.>
+   Built by: <actual model, date and session> · Reviewed by: <actual model, date and session>
+   Plan review: <evidence> · End findings: <link> · Delta verification: <link and verdict>
+   Evidence: <owning sections for complexity, authority, deletions and test invariants>
 
 ## Status and pickup
-<current state, the blocker if any, and the files a fresh agent needs to resume;
-plus canonical plan, MR and compare links.>
+<Current state, blocker, exact heads, remaining work and canonical plan and review links.>

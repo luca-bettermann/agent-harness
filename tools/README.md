@@ -1,7 +1,8 @@
 # vaulttools
 
-`vaulttools/` provides the `vault` command used by a private harness instance. It
-reads layout and bounds from `vault.toml` at the vault root. Run `vault --help`
+`vaulttools/` provides the `vault` command. It reads layout and bounds from
+optional `vault.toml` at the vault root and otherwise uses its built-in defaults.
+Neither INSTANCE.md nor private configuration is required. Run `vault --help`
 and `vault <command> --help` for the exact current arguments.
 
 The commands have deliberately different mutation boundaries:

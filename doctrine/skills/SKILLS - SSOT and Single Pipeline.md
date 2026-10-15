@@ -1,148 +1,68 @@
-## Boundary
+Mandatory authority and semantic-path gate for changes to state, identity, derivation, persistence, orchestration or presentation. [[SKILLS - Architecture]] owns design choices; [[SKILLS - Interfaces]] owns published crossings; [[Review Templates]] owns evidence shapes; [[Writing Guide]] owns their prose.
 
-This skill is the mandatory design and review gate for changes that add or
-alter state, identity, derivation, persistence, orchestration, or presentation.
-[[SKILLS - Architecture]] owns domain decisions; this note checks that each
-decision has one authority and one implementation pipeline. [[SKILLS - Coding]]
-and [[SKILLS - Workflow]] apply it during build and review. [[Writing Guide]]
-governs how the resulting authority maps and decisions are presented.
+## One authority
 
-## Core rule
+An authority map exposes competing definitions before implementation adds another.
 
-Every fact has one authoritative owner and one derivation path. Different
-interfaces, execution modes, storage adapters, and display surfaces may consume
-that fact, but they do not independently recreate its meaning.
+**Covers:** Fact ownership and semantic implementation.
 
-Before proposing implementation options, inspect the existing system and try to
-extend or delete into its current authority. A familiar new abstraction is not
-justified until the existing identities, folds, and contracts have been shown
-insufficient.
+**Applying:** A catalog owner computes eligibility and serves typed meaning; consumers adapt it.
 
-## Design preflight
+**Violating:** Two stores or projections independently define the same fact because they update at different rates.
 
-Every implementation plan records this map:
+**Detailed rules:**
 
-```text
-Canonical fact:
-Owner:
-Producer:
-Fold / derivation:
-Persistence:
-Served projection:
-Consumers:
-```
+- Before building, map the canonical fact, owner, producer, semantic derivation, persistence, served projection and consumers. Apply the root single-source principle to this whole path.
+- Multiple producers, folds or projections for the same meaning require distinct authority or failure-domain proof; storage format or update rate alone does not supply it.
+- Domain vocabulary, eligibility, identity, lifecycle state and refusal meaning are typed facts derived at their owner. Display and fixtures never reconstruct truth from labels, paths, timestamps or filenames.
 
-More than one producer, fold, persistence model, or projection for the same
-fact is a design refusal unless a distinct authority or failure domain is
-proven. Storage format or update rate alone does not create a new authority.
+## Reuse before adding
 
-## Decision rules
+New concepts are justified only by a question that existing authorities cannot answer.
 
-### Reuse before addition
+**Covers:** Existing identities and deletion-led design.
 
-Before adding an id, version, digest, generation, state machine, catalogue,
-endpoint, worker, or projection:
+**Applying:** A missing consumer uses the existing identity rather than adding a second generation ledger.
 
-1. enumerate the existing concepts that answer adjacent questions;
-2. state the exact new question none of them answers;
-3. list every propagation and validation site the new concept creates;
-4. prefer repairing an incomplete consumer of an existing authority.
+**Violating:** A familiar new worker, version or digest is added before enumerating the concepts already answering the question.
 
-### Mode is data
+**Detailed rules:**
 
-Simulation/reality, live/replay, current/historical, interactive/non-interactive
-and similar variants default to mode fields within one contract and one state
-machine. Adapters may acquire facts differently; they feed the same fold.
-Separate implementations require proof of separate semantics or failure
-domains, not merely different timing or transport.
+- Before an identity, version, digest, state machine, catalog, endpoint, worker or projection, enumerate adjacent concepts; name the new unanswered question and propagation and validation sites; repair an existing incomplete consumer first.
+- Record the paths removed, the concepts reused, any new concepts and why existing ones cannot serve, and the expected production delta. Unavoidable new responsibilities justify growth explicitly.
+- A consolidation that grows logic without a consumed responsibility is a finding. Test and fixture growth may preserve a shrinking production kernel; classify it separately.
 
-### Derive once, serve
+## One semantic fold
 
-Domain vocabulary, grouping, eligibility, identity binding, lifecycle state and
-refusal meaning are derived at their owner and served as typed facts. Browsers,
-CLIs, fixtures and downstream repos render or adapt them; they do not maintain
-parallel maps or reconstruct them from labels, paths, timestamps, or filenames.
+Equivalent modes share their meaning even when different adapters acquire their facts.
 
-### Delete first
+**Covers:** Modes, adapters and served projections.
 
-Every structural proposal carries a deletion ledger:
+**Applying:** Live and replay acquire differently but apply the same retained-event fold; a browser renders `id`, `label` and `tone` envelopes.
 
-```text
-Existing paths removed:
-Existing concepts reused:
-New concepts introduced:
-Why existing concepts cannot serve:
-Expected production-code delta:
-```
+**Violating:** Two modes each infer lifecycle meaning, or a UI keeps its own vocabulary and eligibility ladder.
 
-A consolidation that grows production logic is a review finding until the plan
-names the unavoidable new responsibility. Tests, fixtures and generated
-contracts may grow while production code shrinks.
+**Detailed rules:**
 
-## Legitimate separation
+- Equivalent variants default to mode data in one contract and state machine. Separate semantics or failure domains may justify separation; acquisition or timing alone never creates another definition.
+- Adapters for different external systems or crash boundaries may remain separate while sharing typed meaning and fold. A safety supervisor can outlive a run without re-owning its state.
+- Serve display envelopes such as `id`, `label` and `tone` or `label` and `enabled`; clients render them. A one-way display mapping over stable IDs needs a loud unknown fallback and a key-set subset witness, never a domain policy map.
+- Product policy and measurement semantics remain actual decisions; SSOT does not decide time versus distance or retention policy. Once settled, implement one meaning.
 
-SSOT does not mean one file or one process. Separate adapters are legitimate for
-different external systems, update rates, or crash boundaries when they share
-one typed contract and one semantic fold. A safety supervisor may outlive a run
-process; a live adapter may read an open record while replay reads the persisted
-record. Neither separation permits a second definition of identity, state, or
-meaning.
+## Evidence that can refuse
 
-Product policy and measurement semantics remain real decisions. The principles
-cannot choose whether names are reusable, evidence is retained, or a defect is
-defined by time or distance. Once decided, however, they constrain the result to
-one authority and pipeline.
+Review can reject a second authority and states exactly which evidence supports its conclusions.
 
-## Review gate
+**Covers:** Review evidence, inverses and limits.
 
-A structural review answers each question explicitly:
+**Applying:** An authority map names a testable bypass; a source-only report leaves runtime acceptance open.
 
-- What is the canonical fact and who owns it?
-- Is there exactly one semantic derivation and state machine?
-- Are modes represented as data rather than parallel implementations?
-- Did a UI, CLI, fixture, or consumer gain domain logic?
-- Was an existing identity or contract overlooked before adding another?
-- Which obsolete path, fallback, map, or state was deleted?
-- Is the production-code delta negative, or is growth justified by a named
-  responsibility or failure domain?
-- For implemented behavior, do inverse guards fail when the single authority is
-  bypassed or duplicated? For design-only work, is the equivalent falsifier
-  stated precisely enough for a later implementation to test?
+**Violating:** A missing live system is “fixed” by a fallback or a grep-only claim declares zero readers.
 
-Missing answers or an unjustified second path produce **RETURN**, not a cleanup
-suggestion. A reviewer independently inventories the semantic denominator;
-grep locates candidates but does not prove one-path ownership.
+**Detailed rules:**
 
-## Evidence
-
-The gate applies at every evidence level. Lack of a live system does not weaken
-the design rule and does not block a design review; it limits only what may be
-claimed as verified. Use the strongest evidence the context legitimately
-provides:
-
-| Context | Required evidence |
-| --- | --- |
-| Concept or design only | Authority map, alternatives, deletion ledger, named assumptions and testable falsifiers. |
-| Source available, execution unavailable | Semantic inventory of owners/readers, contract and dependency inspection, static comparison, explicit unverified runtime claims. |
-| Tests available | Focused behavioral/structural guards and inverse mutations, then the applicable repository gates. |
-| Live system authorized | The source/test evidence plus only the live checks needed to close environment, timing, integration, or hardware claims. |
-
-Never invent runtime evidence, require unauthorized access, or turn unavailable
-live proof into an implementation workaround. Mark each conclusion as designed,
-source-grounded, test-proven, or live-verified. A lower evidence level may still
-approve the architecture while leaving higher-level acceptance explicitly open.
-
-Where implementation and a meaningful denominator exist, use targeted
-structural and behavioral guards such as:
-
-- exactly one catalogue, controller, manifest, ownership projection, or fold;
-- all supported modes exercise the same implementation through a parameterized
-  contract test;
-- generated fixtures and docs compare against the real owner;
-- retired endpoints, aliases, compatibility maps, and fallback paths are absent;
-- a mutation that bypasses the authority or reintroduces a duplicate path fails
-  a named guard.
-
-Record the authority map, deletion ledger, production delta and inverse proofs
-in the task note's build and review sections. Do not duplicate this checklist in
-individual task cards; link this skill and record only task-specific evidence.
+- Review names the canonical owner and fold, explains mode representation, checks consumer logic and identity reuse, and reports deleted paths, production delta and inverse evidence. Missing answers or an unjustified second path produce RETURN.
+- Inventory the semantic denominator independently; use Coding’s reference evidence. Demonstrate a meaningful guard fails when authority is bypassed; design-only work names the precise falsifier.
+- Design evidence names the map, alternatives, assumptions and falsifier. Source evidence inventories owners, readers and contracts. Test evidence establishes behavior and inverses. Live verification requires authorized checks of the environment needed for the claim.
+- Never invent live proof or require unauthorized access; lower evidence can approve design while higher acceptance remains open. Verification environment and ownership follow Interfaces.
+- Record task-specific authority map, deletion ledger, classified delta and inverse in the existing task build and review evidence; link this skill rather than copy its checklist.

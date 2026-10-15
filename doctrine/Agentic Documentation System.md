@@ -1,80 +1,72 @@
-Reference architecture for an agentic **documentation** system: where knowledge
-and its representations live, with single sources and clean boundaries. This is
-the evergreen model, separated from any one deployment.
-[[tasks-and-collaboration|Tasks and collaboration]] owns the operating policy on
-top of it. To instantiate the
-system, keep the method here and fill the concrete bindings in `INSTANCE.md`.
-Per-craft detail lives in [[SKILLS - Coding]] and [[SKILLS - Visual Identity]].
+Owns the documentation model: authority, granularity, derived representations and reusable doctrine. [[Writing Guide]] owns language; [[SKILLS - Work]] owns work state and authorization. Concrete stores and conventions live in INSTANCE.
 
-> Status: **skeleton.** Settled components are filled; others are marked `STUB — fill case-by-case`.
+## One home per knowledge kind
 
-## Principle — Single Source of Truth, drawn by boundaries
+Knowledge is maintained where its purpose and rate of change belong.
 
-Every fact, decision, or convention has **exactly one authoritative home**; everything else points back to it. Duplication and drift are the failure mode, and they appear wherever a **boundary** is missing or fuzzy — so the real work is *drawing clean boundaries*. Boundaries are the engine; SSOT is the property that emerges when they're clean.
+**Covers:** Concept, implementation, structure, work state and history.
 
-A thing points back to its source in one of two ways — the distinction that decides how it's protected:
+**Applying:** A concept explains why; repository code implements how; its context file links the concept.
 
-- **Reference (hard link)** — the dependent pulls *from* the source (an import, a backlink). There is one copy; drift is structurally impossible.
-- **Conformance (soft link)** — each site independently *embodies* the rule (naming, style, layering). The definition is single but the embodiments are many, so drift is possible and needs an **enforcer** (formatter, linter, review).
+**Violating:** A task note becomes a permanent design manual or a concept copies module signatures.
 
-Test for whether a rule is *about* SSOT at all: **does it exist to stop the same thing living in two places?** ("Defined once" is trivially true of every rule and doesn't count — anti-drift *purpose* is the discriminator.) Physical safety and when-to-involve-a-human are *not* SSOT by this test; they have no second-home risk.
+**Detailed rules:**
 
-## The method — five fields per component
+- Evergreen knowledge owns what and why, including relevant rejected alternatives; extend the nearest existing concept before creating a note. It survives a rewrite.
+- Code owns behavior and shared schema modules own cross-module vocabulary. Repository context owns present as-built purpose, identities, wiring and load-bearing risks.
+- The board owns human-set stream state; task and stream notes own current scope, rulings and pickup; Git owns why a change happened. Transient scratch owns no durable fact.
+- For each component, describe its role, what it owns, what it excludes and which neighbor owns that, its relationships, how its boundary is held, and its instance binding. Type travels between deployments; binding names a concrete value.
+- Reference means one copy pulled by an import or link. Conformance means independent embodiments and a named existing enforcer where drift is load-bearing. Safety and human authority are separate from anti-duplication rules.
 
-Define any component of the system by answering five things. The first four are evergreen and travel to any project; the fifth is the only project-specific slot.
+## Derive representations
 
-1. **Role** — what knowledge/artifact it owns.
-2. **Owns / boundary** — what it owns, and what it explicitly does *not* (and which neighbour does).
-3. **Relationships** — how it links to the other components.
-4. **Held by** — reference, or enforced conformance (name the enforcer).
-5. **`[binding]`** — the concrete instance you fill in per project.
+A representation stays aligned with its owner through derivation or a direct reference.
 
-(This is the SSOT method applied per component; the rest of the note is just this template, repeated.)
+**Covers:** Enumerations, context documents and diagrams.
 
-## Components
+**Applying:** A module inventory is generated from code or links the code; one curated diagram explains the mental model.
 
-### Evergreen knowledge store
-- **Role:** the canonical *what & why* — concepts, rationale, design decisions, a thing's role across the system. Each note has a distinct purpose; smaller decisions extend the nearest existing note. It survives a from-scratch rewrite.
-- **Owns / not:** the *why*. Not the as-built structure (→ Structure docs), not the *how* (→ Code), not work-state (→ Task board).
-- **Relationships:** everything links *in*; it links *out* and never restates a neighbour.
-- **Held by:** reference (links / backlinks).
-- **`[binding]`:** knowledge application, repository, note granularity, and link format; supplied by `INSTANCE.md`.
+**Violating:** A manually maintained verb list and exhaustive import diagram duplicate code facts.
 
-### Code
-- **Role:** the *how* — logic and implementation.
-- **Owns / not:** behaviour. Not the *why* (→ knowledge store); not cross-module constants (→ a constants module).
-- **Relationships:** imports the single source for shared logic/constants; named (not duplicated) by Structure docs.
-- **Held by:** reference (define once, import/call) **and** enforced conformance for style/naming/layering (formatter, linter, import-contracts).
-- **`[binding]`:** languages, shared-constant convention, formatters, linters, and import-contract tools; supplied by `INSTANCE.md` and repository instructions.
+**Detailed rules:**
 
-### Structure docs (as-built)
-- **Role:** the *structure as it is now* — each folder's purpose, its modules and how they wire, current state & risks. Tracks the code.
-- **Owns / not:** where things are and how they connect, *as-built*. Not the *why* (→ knowledge store), not the *how* (→ Code).
-- **Relationships:** one per folder; names modules and links the knowledge store for the why; carries the diagram.
-- **Held by:** conformance — updated whenever modules change.
-- **`[binding]`:** structure-document names and locations; supplied by `INSTANCE.md` or repository instructions.
+- An enumerable code-owned fact is generated by the existing owner with a regenerate-and-compare check, or replaced by a link. No new generator merely to preserve an unnecessary list.
+- Each meaningful package boundary has a context document; trivial helper or asset folders need none. The root PROJECT_CONTEXT.md begins with four fields: Purpose, Owns, Out of scope with its owner, and Depends on with the dependency authority. Subpackages use <FOLDER>_CONTEXT.md.
+- Context records purpose, a useful curated relationship diagram, module and class identities and only load-bearing invariants or open risks. Keep it under 60 lines unless a documented requirement needs more.
+- Detailed import and module topology is derived or linked. A context diagram explains relationships, its table identifies nodes, prose explains rationale; each fact-type appears once.
+- Repo-internal diagrams live with repository structure; cross-repository and deployment intent lives in the existing concept and links its endpoints. Code-generated visuals live with their generator; hand-made assets use the instance store.
 
-### Diagrams
-- **Role:** *relationships / topology* at a given granularity. Repo-internal → in the Structure doc; cross-repo + deployment → in the knowledge store (one author).
-- **Owns / not:** the wiring/flow. Not per-node identity (→ the structure table), not rationale (→ prose). One home per fact-type inside a file.
-- **Relationships:** embedded in the doc whose scope it shows; edge nodes link out.
-- **Held by:** conformance — updates with the structure it sits in.
-- **`[binding]`:** diagram format and rendering constraints; supplied by `INSTANCE.md`.
+## Maintain current knowledge
 
-### Change history
-- **Role:** the *why-we-changed* — how the current state came to be.
-- **Owns / not:** change rationale and history. *Nothing* about the present state (that lives in the present-tense artifacts; the source describes the present as if it had always been so).
-- **Held by:** reference (the commits *are* the record).
-- **`[binding]`:** version-control history; supplied by `INSTANCE.md`.
+Maintained documents describe current knowledge while history remains recoverable from its existing archive.
 
-### Visual identity / branding
-`STUB — fill case-by-case.` Expected shape: the single visual spec every output conforms to (a conformance-SSOT), enforced by a shared style module so figures/reports can't drift. Binding ≈ the palette / fonts / plot style.
+**Covers:** Present tense, local explanation and promotion.
 
-## Evergreen vs binding — the reproducibility test
+**Applying:** A changed module updates its context and a useful durable ruling amends the existing concept.
 
-The line between "stays in this note" and "fill in per project" is **type vs instance**:
+**Violating:** Docstrings preserve a task or date narrative or a shipped report remains a second live authority.
 
-- *Evergreen (type):* "there is a store for evergreen knowledge, one concept per unit, linked not restated."
-- *Binding (instance):* "it's this Obsidian vault, with these tags, at this URL."
+**Detailed rules:**
 
-To reproduce the system elsewhere: walk the components, keep fields 1–4, fill field 5. The faster that's possible, the cleaner the abstraction.
+- Maintained documents explain current design and rationale, not the change diary. Superseded text is deleted in place; Git preserves history.
+- Default to no comment or one-line docstring. Explain a non-obvious local invariant or load-bearing reason, never the signature or next line; move module design to context.
+- The root knowledge funnel determines how provisional work becomes permanent. This document defines its destinations rather than another promotion process.
+- Work owns promotion; the Stream Note Template owns candidate kinds and their durability test.
+
+## Author reusable doctrine
+
+A skill defines a distinct reusable concern without duplicating its neighbors or instance bindings.
+
+**Covers:** Skill boundaries and principle and rule structure.
+
+**Applying:** A skill owns three clear principles with generic applying and violating examples; instance model names are linked.
+
+**Violating:** A new authoring skill restates the Writing Guide and every skill copies the global rules.
+
+**Detailed rules:**
+
+- Route the concern to an existing owner first. A new skill needs a distinct responsibility, consumer and lifecycle; remove displaced rules in the same change.
+- Use 3–5 fundamental principles per skill. Open each with one sentence stating its guarantee, then Covers for scope, Applying for an example, Violating for a counterexample, and Detailed rules. A recent incident is not itself a principle.
+- Begin with ownership and exclusions naming neighbors. Co-load neighbors only when work actually touches them. Stable native wrappers point to canonical files; they contain no copied doctrine.
+- Keep examples generic and failure-revealing. People, repos, hosts, CI versions, current models, concrete palettes and document stores belong to INSTANCE or its named owner.
+- Audit duplicates by fact and purpose, not identical wording. A citation or route pointer is intentional reference, not duplicate policy. Count fewer concerns and paths, never denser text.

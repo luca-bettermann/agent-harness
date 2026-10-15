@@ -3,15 +3,10 @@ Owns top-down audit and simplification of existing code. Architecture, Interface
 ## Requirements before mechanisms
 
 The audit evaluates machinery against sourced requirements rather than treating existing machinery as a requirement.
-
 **Covers:** Scope, authoritative requirements and goals.
-
 **Applying:** The operator defines levels 0–5 and each kept requirement cites an operator ruling or measurement.
-
 **Violating:** An agent-written plan invents a criterion, guard and handling chain, then audits it as a requirement.
-
 **Detailed rules:**
-
 - The operator chooses the start and end levels; the default is 0–5. Starting lower assumes the higher levels are settled.
 - Name a source for every requirement: an operator ruling or a measurement. Agent notes or comments alone do not establish a requirement.
 - Questions for the operator are an output: domain knowledge can remove the largest machinery. State criteria as goals, never a required evidence path or mechanism.
@@ -19,15 +14,10 @@ The audit evaluates machinery against sourced requirements rather than treating 
 ## Top-down once
 
 Each audit level examines only the scope retained by the levels above it.
-
 **Covers:** Audit level sequence and retained floor.
-
 **Applying:** A redesigned concept is built at its new owner; only retained lower-level code is audited.
-
 **Violating:** Several agents re-audit discarded code or count the same cross-repo deletion twice.
-
 **Detailed rules:**
-
 Finish each level across the whole scope before moving lower. Each level covers what the higher levels retain; its result becomes the next level's floor.
 
 | Level | Ask | Hunt for | Result |
@@ -44,15 +34,10 @@ Levels 0–2 examine concepts and owners across repositories; levels 3–5 exami
 ## Price the simpler alternative
 
 Every retained mechanism earns its standing cost against the simplest viable alternative.
-
 **Covers:** Concept and mechanism screening and standing debt.
-
 **Applying:** A query replaces a stored mirror; a framework replaces custom infrastructure and its maintenance cost is priced.
-
 **Violating:** A published fixture builder is cut because production does not call it, although consumers need it to test their supported interface.
-
 **Detailed rules:**
-
 - Apply [[AGENTS#2. Global principles|Minimal design and Adopt before build]]: for every subsystem, price an installed tool or mature framework against retaining custom code. Include deleting the requirement when its source allows it. Represent taxonomy as data, derive views through one computation, and expose declared operations through adapters. Producers publish source meaning. Prepare before the run, and skip all visual work when running headlessly.
 - For each finding, state its location, consequence, cost, simpler alternative, what would be lost and who consumes it. Offer not building first where that is viable.
 - Check that a new store, format or channel retires its predecessor. Keep validation at the owning contract; add crash handling only for an observed failure. Name the operating system, library or tool feature that already provides the guarantee.
@@ -62,15 +47,10 @@ Every retained mechanism earns its standing cost against the simplest viable alt
 ## Demonstrate the failure
 
 A reported defect is supported by evidence that exposes the claimed failure.
-
 **Covers:** Verified findings and behavioral protection.
-
 **Applying:** A reviewer reproduces the missing-denominator counterexample and keeps the law that protects it.
-
 **Violating:** An unverified lead is labeled a defect or a permanent mutation harness duplicates the real law.
-
 **Detailed rules:**
-
 - Verify a found bug before promoting it to a defect, trace its owner and pattern, and apply owner fixes across confirmed instances. Keep assumptions and new versus known findings explicit.
 - Level 5 keeps cheaply proven guarantees, removes structural pins and duplicate builders, and assigns each test its invariant. Coding owns the test-quality rules, not a numerical quota.
 - Run the inverse review probe once and discard it; retain the committed behavioral laws. Use the strongest legitimate evidence. When runtime proof is unavailable, limit the claim without weakening the design rule.

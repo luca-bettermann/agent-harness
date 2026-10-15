@@ -3,15 +3,10 @@ Owns implementation and behavior tests inside a settled design. [[SKILLS - Archi
 ## Minimal implementation
 
 The implementation satisfies every accepted requirement with the smallest clear design that serves it today.
-
 **Covers:** Scope, reuse, deletion and the code-level application of [[AGENTS#2. Global principles|Minimal design and Adopt before build]].
-
 **Applying:** The builder diagnoses the failing path before editing, identifies the whole defect class and its sibling sites, then fixes the shared cause and adds one regression test that catches every affected case.
-
 **Violating:** A patch treats the first symptom before diagnosing its cause, leaves sibling cases broken, or silently drops a difficult accepted requirement to make the diff smaller.
-
 **Detailed rules:**
-
 - Inspect instructions, worktree status and the touched dependency surface first. Implement every accepted requirement; do not silently narrow it. Preserve unrelated edits and prefer a targeted edit when it achieves the same result.
 - Reuse the existing implementation first. Within owned code, consider the standard library, an installed dependency and a mature framework before writing new code. This order never justifies rebuilding solved infrastructure from standard-library parts; Architecture owns that subsystem decision.
 - Add no speculative abstraction, configuration, scaffold or future reader. Every addition names a current consumer. Never trade readability for fewer lines.
@@ -22,15 +17,10 @@ The implementation satisfies every accepted requirement with the smallest clear 
 ## Tests prove behavior
 
 A test establishes a named guarantee only when its oracle, inputs and bound environment can expose the claimed failure.
-
 **Covers:** Laws, models, counterexamples, fixtures, inverse evidence and environment fidelity.
-
 **Applying:** A test asserts the expected status for its intended nonempty input set; an inverse changes only the condition whose refusal it claims to prove. An injected clock or an explicit join proves timing or completion without making the verdict depend on host speed.
-
 **Violating:** A check accepts any status except 403, including 500, or an unrelated input error makes an inverse fail before the condition it claims to test.
-
 **Detailed rules:**
-
 - Prefer laws such as roundtrip equality, rebuild equality and idempotence, then stateful models with a named oracle, then behavior counterexamples. Assert guarantees rather than private structure or call order. Use pytest functions, not unittest classes.
 - Prove a denominator exists and covers the intended set before applying every-item predicates. Assert the exact expected outcome, including status and refusal meaning. Cover absence, mismatch, interruption, duplicate input and wrong authority within the guarantee that owns them.
 - Show the inverse failing before the fix and passing after it. It must fail for the reason it claims; an earlier unrelated refusal is not proof. Use a temporary mutation to show a committed guard bites, then discard the probe.
@@ -48,15 +38,10 @@ A test establishes a named guarantee only when its oracle, inputs and bound envi
 ## Readable implementation
 
 Code makes domain meaning, state changes and failure behavior apparent to its next reader.
-
 **Covers:** Functions, classes, constants, configuration, semantic tracing and repository hygiene.
-
 **Applying:** A stateless transformation is a function, while a class keeps state and its lifecycle invariant together.
-
 **Violating:** Dense expressions hide ownership or repeated external strings drift across modules.
-
 **Detailed rules:**
-
 - Favor composition and subclass only for a genuine is-a relationship. Put imports at the top, prefix private helpers with `_`, and avoid mechanical getters and setters. Split responsibilities when they diverge; roughly 500 lines prompts review rather than automatic abstraction.
 - Enforce hard constraints through bounds or construction. Fail loudly at integrity, identity, lifecycle and safety boundaries, naming the cause and next action. Missing lifecycle state is never silently null. Warn only when proceeding is safe.
 - Import shared vocabulary from a prominent schema or constants module. Namespace external fields so callers reveal their meaning. Algorithm constants used within one module stay at their use site.

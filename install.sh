@@ -11,9 +11,9 @@ inst=${1:-$(cat "$dst/instance-path" 2>/dev/null || true)}
 rm -rf "$dst.new"
 mkdir -p "$dst.new/skills"
 cp -r "$src/AGENTS.md" "$src/hooks" "$src/knowledge" "$dst.new/"
-for d in "$src"/upstream/skills/engineering/*/ "$src"/upstream/skills/productivity/*/ "$src"/engineering/*/; do
+for d in "$src"/upstream/skills/engineering/*/ "$src"/upstream/skills/productivity/*/ "$src"/engineering/*/ "$src"/knowledge/*/; do
   n=$(basename "$d")
-  [ "$n" = addenda ] && continue
+  [ -f "$d/SKILL.md" ] || continue
   cp -r "$d" "$dst.new/skills/$n"
   a="$src/engineering/addenda/$n.md"
   if [ -f "$a" ]; then printf '\n' >> "$dst.new/skills/$n/SKILL.md"; cat "$a" >> "$dst.new/skills/$n/SKILL.md"; fi

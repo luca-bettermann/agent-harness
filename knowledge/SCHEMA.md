@@ -6,6 +6,13 @@ A knowledge module is a [Karpathy-style LLM wiki](https://gist.github.com/karpat
 
 Durable concepts, decisions and explanations live in a knowledge module. Current code behavior lives in its repository (code, `GLOSSARY.md`, `docs/adr/`), work in the issue tracker, and history in git. Put each fact in the one home whose purpose it serves, and link from everywhere else.
 
+## Pages
+
+- Frontmatter holds only `description`: one line saying what the page answers. Indexes are generated from it.
+- Sources are linked inline, next to the claims they support; a page's source count is derived from those links.
+- A topic is a concept page, never a tag: its backlinks list everything about it, and its summary is readable by agents.
+- Each folder has an `index.md` listing its pages; the module index lists the folders. Queries read down this tree.
+
 ## Promotion
 
 Permanent knowledge changes only through a promotion the operator accepts while present. An agent proposes the exact change; it never merges it alone.

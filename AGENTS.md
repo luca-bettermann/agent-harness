@@ -1,6 +1,6 @@
 # AGENTS
 
-The only always-loaded harness file. The workspace's `INSTANCE.md` names the operator, people, paths, repositories and tools; read it when present. Skills load by their descriptions: `engineering` for any code change, plus the matching upstream skills. A knowledge module's own `CLAUDE.md` brings its schema. The task's scope and authorization govern what may change.
+The only always-loaded harness file. The installation's `INSTANCE.md`, loaded with this file, names the operator, people, paths, repositories and tools. Skills load by their descriptions: `engineering` for any code change, plus the matching upstream skills. A knowledge module's own `CLAUDE.md` brings its schema. The task's scope and authorization govern what may change.
 
 ## Principles
 

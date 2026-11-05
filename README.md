@@ -50,7 +50,7 @@ Requires `jq`. Run once per account, and again after updating this checkout:
 ./install.sh
 ```
 
-It builds `~/.agent-harness` (AGENTS, skills with addenda appended, the knowledge schema and the hook), links the skills into `~/.claude/skills` and `~/.codex/skills`, links `AGENTS.md` as `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, and adds a Claude Code `SessionStart` hook that re-injects AGENTS after compaction and resume. It never replaces a file it didn't create. The installation's workspace `CLAUDE.md` (and `AGENTS.md` for Codex) imports its `INSTANCE.md`.
+It builds `~/.agent-harness` (AGENTS, skills with addenda appended, the knowledge schema and the hook), links the skills into `~/.claude/skills` and `~/.codex/skills`, writes `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` to load AGENTS and the given `INSTANCE.md` (`./install.sh <path>`, remembered), moving any earlier file aside as `*.pre-harness`, and adds a Claude Code `SessionStart` hook that re-injects AGENTS after compaction and resume. 
 
 ## Update upstream
 

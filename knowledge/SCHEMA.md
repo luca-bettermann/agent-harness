@@ -28,7 +28,7 @@ Permanent knowledge changes only through a promotion the operator accepts while 
 
 | Event | Action |
 | --- | --- |
-| An issue completes, or a source or decision is accepted | Name the affected pages, or record why no change is needed. |
+| A project's last issue ("Update knowledge") starts, or a source or decision is accepted | Name the affected pages, or record why no change is needed. |
 | A meeting or daily note with action items is ingested | One issue per note, the items as its checklist (an item for another team or person gets its own issue); the checkboxes become the issue link. |
 | A durable change is identified | Propose the edit at the existing page, with sources and repaired links. |
 | The proposal passes its checks (links, metadata, figures) | Present it to the operator for approval. |

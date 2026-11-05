@@ -1,4 +1,4 @@
-@<agent-harness>/knowledge/SCHEMA.md
+@~/.agent-harness/knowledge/SCHEMA.md
 
 # <Module name>
 

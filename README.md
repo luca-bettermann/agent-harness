@@ -1,76 +1,61 @@
 # agent-harness
 
-`agent-harness` is a Git-backed method and command-line tool for coordinating agent work through task notes, stream notes, a board, and explicit review and promotion gates. The public repository owns the reusable method. The public method works without INSTANCE.md or private configuration. An optional private instance supplies deployment bindings and knowledge stores for one team.
+A harness for coding and research agents, assembled from established, replaceable tools that each own one responsibility. Tools connect through their existing CLI, API or MCP interfaces, plus a few skills that explain how to use them. Custom code stays minimal.
 
-| Public framework | Private instance |
-| --- | --- |
-| `AGENTS.md`, doctrine, skills, templates, base views, examples, and `vaulttools` | `INSTANCE.md`, `vault.toml`, the live board, task and stream notes, mounted repositories, private knowledge, and local editor state |
+Two rules shape every choice:
 
-The working vault and a team wiki may be independent sibling repositories. Record their concrete locations in the private `INSTANCE.md`; the framework does not own or mirror team knowledge.
+- **Adopt before building.** Use an established tool wherever one exists; write our own only for what nothing else covers.
+- **Model-agnostic and minimal.** Write down only what a capable model can't know (our facts, hard limits and deliberate departures from common practice), and enforce what matters with tools rather than prose.
+
+## Axes
+
+Each axis has one owner. Replacing a tool may need data migration and new instructions, but the other axes keep their owners. The tools are this harness's defaults; an installation can choose others.
+
+| Axis | Owns | Default |
+| --- | --- | --- |
+| Knowledge | Durable concepts, decisions, sources and explanations | Karpathy-style Markdown wiki in modules (`knowledge/`) |
+| Task management | Work items, owners, progress, blockers and handoffs | Linear |
+| Repository workspace | Repositories, branches, merge requests and CI | Git, vcs2l, GitLab |
+| Code structure | Where code concepts live and how they depend on each other, as derived diagrams | Emerge, Mermaid, AsyncAPI and OpenAPI |
+| Doctrine | Principles, workflows as skills, and enforcement | `AGENTS.md`, `engineering/`, Matt Pocock's skills |
+| Agent execution | Sessions, dispatch, models and budgets | Claude Code, Codex; `implement-spec` |
+
+## Layers
+
+Three repositories, each pinned by the next:
+
+1. [mattpocock/skills](https://github.com/mattpocock/skills), kept untouched in `upstream/` as a git subtree.
+2. **agent-harness** (this repository): the general harness.
+3. **An installation** (private): `INSTANCE.md` with its people, paths, repositories and models, the issue-tracker mapping in `docs/agents/`, and client settings. Start from `INSTANCE.example.md`.
 
 ## Layout
 
-- `AGENTS.md` is the always-read entry point. It loads `INSTANCE.md` when an instance provides one.
-- `doctrine/` holds the reusable operating method, ten craft and method skills, and three note and review templates. Work owns the complete work lifecycle; Interfaces owns published boundaries and verification. Audit covers existing-code diagnosis and redesign.
-- `Board.base` and `Backlog.base` are optional Obsidian Bases views over task front matter.
-- `tools/vaulttools/` provides the `vault` command.
-- `vault.example.toml`, `INSTANCE.example.md`, and `Kanban.example.md` are copied into a private instance and edited there.
+| Scope | Where | Loaded |
+| --- | --- | --- |
+| Everything | `AGENTS.md`: principles and hard limits | always |
+| Code | `engineering/`: the `engineering` and `frontend` skills | by description |
+| One skill | `engineering/addenda/<skill>.md`, appended to the upstream skill of that name at install | with that skill |
+| Knowledge | `knowledge/SCHEMA.md`, imported by each module's `CLAUDE.md`; `knowledge/module/` is the skeleton | in that module |
+| Baseline | `upstream/skills/engineering/` and `productivity/` | by description |
 
-## Prerequisites
+## Flow
 
-- Python 3.11 or newer
-- [uv](https://docs.astral.sh/uv/)
-- Git
-- Git LFS when a configured repository uses LFS
-- `glab` only when `vault sync` must derive stream state from GitLab merge requests
+A project is a spec, its issues are thin slices with blocking links (`to-spec`, `to-tickets`). `implement-spec` starts one fresh subagent per unblocked issue on its own branch and worktree, merges each finished issue into `project/<slug>`, and ends with one `code-review` of the project branch. One merge request per repository brings the project into `main`. CI runs only the jobs a change affects.
 
-## Start a private instance
+## Install
 
-Clone this repository into a private remote, or merge its clean initial commit once into an existing private repository as described below. In the private checkout:
+Requires `jq`. Run once per account, and again after updating this checkout:
 
 ```sh
-cp vault.example.toml vault.toml
-cp INSTANCE.example.md INSTANCE.md
-cp Kanban.example.md Kanban.md
-cd tools/vaulttools
-uv sync --locked
-uv run vault --vault ../.. hook install
+./install.sh
 ```
 
-Edit the copied files before normal use. The example explicitly selects `tasks/`; without a config file, the CLI retains legacy task-folder defaults for both `tasks` and `08 Tasks`. Keep the public examples generic and commit concrete bindings only to the private repository.
+It builds `~/.agent-harness` (AGENTS, skills with addenda appended, the knowledge schema and the hook), links the skills into `~/.claude/skills` and `~/.codex/skills`, links `AGENTS.md` as `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md`, and adds a Claude Code `SessionStart` hook that re-injects AGENTS after compaction and resume. It never replaces a file it didn't create. The installation's workspace `CLAUDE.md` (and `AGENTS.md` for Codex) imports its `INSTANCE.md`.
 
-For an existing private repository with unrelated history, add this public repository as `upstream`, fetch its public `main`, and make one normal merge with `--allow-unrelated-histories`. Resolve shared files to the reviewed public versions while preserving private-only files. Future framework updates are ordinary ancestry-preserving merges from `upstream/main`.
+## Update upstream
 
-## Daily use
-
-Run `uv run vault --help` and each subcommand's `--help` for the current interface. The command effects are summarised in [tools/README.md](tools/README.md): `startup` performs a bounded refresh of configured scopes, `hygiene` is read-only, `sync` may fetch canonical repositories and edit derived status fields, and `move` and `sweep` commit and push private vault state.
+Review Matt's changes, then:
 
 ```sh
-cd tools/vaulttools
-uv run vault --vault ../.. startup --timeout 20 --deadline 120
+git subtree pull --prefix=upstream https://github.com/mattpocock/skills.git main --squash
 ```
-
-Pull private work from `origin` as usual. Review public framework updates separately: fetch `upstream`, inspect the public-only range, then merge an accepted public commit into the private branch. Do not combine an upstream framework review with an ordinary private `origin` pull.
-
-## Contributing without private history
-
-Develop public changes in a clean clone of `agent-harness`. Never push a private instance branch, merge commit, task note, board, config, binding file, mount, or private Git history to the public remote. Export only reviewed generic changes into the clean public checkout and inspect its tree and reachable commits before pushing.
-
-## Tests
-
-```sh
-cd tools/vaulttools
-uv sync --locked
-uv run pytest
-uv run ruff check .
-uv run pyright
-uv run vault --help
-```
-
-## Shipped limits
-
-- `vault startup` is explicit; the harness installs no automatic host or client invocation.
-- Default remote status derivation uses GitLab merge-request state through `glab`. `--local` writes no status and runs hygiene only.
-- `vault sync` does not pull, commit, or push the vault. In remote mode it fetches only the canonical repositories needed for status derivation and writes changed status fields to the working tree.
-- A typed `[scopes]` table configures startup paths and branch or pin targets. It does not enforce cross-scope link direction.
-- The repository ships no host installer. Hook installation is the explicit `vault hook install` action.

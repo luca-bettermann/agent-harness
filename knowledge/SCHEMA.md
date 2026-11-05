@@ -29,6 +29,7 @@ Permanent knowledge changes only through a promotion the operator accepts while 
 | Event | Action |
 | --- | --- |
 | An issue completes, or a source or decision is accepted | Name the affected pages, or record why no change is needed. |
+| A meeting or daily note with action items is ingested | Create one issue per item in the owning team, and replace the checkbox with the issue link. |
 | A durable change is identified | Propose the edit at the existing page, with sources and repaired links. |
 | The proposal passes its checks (links, metadata, figures) | Present it to the operator for approval. |
 | Approved | Merge and publish; link the result back to the issue. |

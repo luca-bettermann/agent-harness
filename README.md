@@ -44,6 +44,18 @@ A project is a spec, its issues are thin slices with blocking links (`to-spec`, 
 
 See [CHEATSHEET.md](CHEATSHEET.md) for the commands you use day to day.
 
+## Requirements
+
+| Need | For | Required |
+| --- | --- | --- |
+| [Claude Code](https://claude.com/claude-code) and/or [Codex CLI](https://github.com/openai/codex) | Running the agents | yes, at least one |
+| `git`, `jq`, a POSIX shell | `install.sh` and the git workflow | yes |
+| An issue tracker with an MCP server ([Linear](https://linear.app) by default) | Projects, issues and their states | yes |
+| A git host with merge requests and CI (GitLab or GitHub) | Project MRs into `main`, affected-only CI | yes, for code work |
+| [Obsidian](https://obsidian.md) | Reading and editing knowledge modules | recommended |
+| [vcs2l](https://github.com/ros-infrastructure/vcs2l) | Cloning and updating many repositories from one manifest | for multi-repo workspaces |
+| [Quartz](https://quartz.jzhao.xyz), [TikZJax](https://tikzjax.com) | Publishing a wiki, rendering TikZ figures | optional |
+
 ## Install
 
 Requires `jq`. Run once per account, and again after updating this checkout:
@@ -54,6 +66,14 @@ Requires `jq`. Run once per account, and again after updating this checkout:
 
 It builds `~/.agent-harness` (AGENTS, skills with addenda appended, the knowledge schema and the hook) and links the skills into `~/.claude/skills` and `~/.codex/skills`; a skill link it didn't make is left alone with a warning. It writes `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` to load AGENTS and the given `INSTANCE.md` (`./install.sh <path>`, remembered). An entry file it didn't write, or one edited since, is moved aside as `*.pre-harness` (numbered when one exists). It adds a Claude Code `SessionStart` hook that re-injects AGENTS and INSTANCE after compaction and resume. `setup-matt-pocock-skills` isn't installed: the issue-tracker mapping lives once, in the installation.
 
+## Start your own installation
+
+1. Create a private repository for your installation.
+2. Copy `INSTANCE.example.md` into it as `INSTANCE.md` and fill in your people, paths, tools and models.
+3. Add `docs/agents/` with your issue-tracker mapping (how a spec, an issue, blocking links and states map onto your tracker). Matt's `setup-matt-pocock-skills` shows the format.
+4. For each knowledge module, copy `knowledge/module/` and fill in its `CLAUDE.md`.
+5. Run `./install.sh /path/to/your/INSTANCE.md` on every account that runs agents.
+
 ## Update upstream
 
 Review Matt's changes, then:
@@ -61,3 +81,7 @@ Review Matt's changes, then:
 ```sh
 git subtree pull --prefix=upstream https://github.com/mattpocock/skills.git main --squash
 ```
+
+## License
+
+MIT, see [LICENSE](LICENSE). Matt Pocock's skills in `upstream/` keep their own MIT license.

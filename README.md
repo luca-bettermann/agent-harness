@@ -50,7 +50,7 @@ Requires `jq`. Run once per account, and again after updating this checkout:
 ./install.sh
 ```
 
-It builds `~/.agent-harness` (AGENTS, skills with addenda appended, the knowledge schema and the hook), links the skills into `~/.claude/skills` and `~/.codex/skills`, writes `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` to load AGENTS and the given `INSTANCE.md` (`./install.sh <path>`, remembered), moving any earlier file aside as `*.pre-harness`, and adds a Claude Code `SessionStart` hook that re-injects AGENTS after compaction and resume. 
+It builds `~/.agent-harness` (AGENTS, skills with addenda appended, the knowledge schema and the hook) and links the skills into `~/.claude/skills` and `~/.codex/skills`; a skill link it didn't make is left alone with a warning. It writes `~/.claude/CLAUDE.md` and `~/.codex/AGENTS.md` to load AGENTS and the given `INSTANCE.md` (`./install.sh <path>`, remembered). An entry file it didn't write, or one edited since, is moved aside as `*.pre-harness` (numbered when one exists). It adds a Claude Code `SessionStart` hook that re-injects AGENTS and INSTANCE after compaction and resume. `setup-matt-pocock-skills` isn't installed: the issue-tracker mapping lives once, in the installation.
 
 ## Update upstream
 

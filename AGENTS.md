@@ -16,7 +16,7 @@ The only always-loaded harness file. The installation's `INSTANCE.md`, loaded wi
 
 **Physical systems.** Never trigger movement, heating, actuation, hardware state changes or endpoints that reach them. Work in virtual or mock modes, and give real commands to the system's named human owner. Preserve stop and limit guarantees at their owner.
 
-**Secrets.** Credential values never enter notes, issues, messages, logs, commits, prompts or command output. Link the password-manager entry instead.
+**Secrets.** Credential values never enter notes, issues, messages, logs, commits, prompts or command output, except a store INSTANCE names as allowed to hold them; never copy them out of it or print them. Link the password-manager entry instead.
 
 **Git.** Pull before reading or writing. Stage explicit paths, never `-A` in a shared tree. Commit meaningful units and push after committing. Never force-push, rewrite published history or discard another writer's edits; a conflicting rebase fails visibly. Canonical clones are fetch-only. Each agent works in its own folder under the work root, with one worktree per repository it touches. In code repositories `main` only receives project merge requests. Only the personal knowledge base and the installation repository are edited directly on `main`; other knowledge modules follow their own contribution rules.
 

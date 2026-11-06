@@ -1,0 +1,244 @@
+#!/usr/bin/env python3
+"""Map Python and TypeScript imports without writing to the source folder."""
+
+import argparse
+from collections import Counter, defaultdict
+import json
+import os
+from pathlib import Path, PurePosixPath
+import subprocess
+import sys
+import tempfile
+import venv
+
+
+REQUIREMENTS = ["emerge-viz==2.0.7", "setuptools<81", "pip", "networkx<3.4"]
+CLUSTER = "metric_file_result_dependency_graph_louvain-modularity-in-file"
+SINCE = "90 days ago"
+
+
+def bootstrap(scratch):
+    environment = scratch / "venv"
+    python = environment / "bin/python"
+    installed = environment / "installed.json"
+    if not installed.exists() or json.loads(installed.read_text()) != REQUIREMENTS:
+        venv.create(environment, with_pip=True, symlinks=True)
+        print(f"Installing Emerge in {environment}", file=sys.stderr)
+        result = subprocess.run(
+            [str(python), "-m", "pip", "install", "--no-cache-dir", *REQUIREMENTS],
+            capture_output=True,
+        )
+        if result.returncode:
+            raise RuntimeError(f"Emerge installation failed (exit {result.returncode})")
+        installed.write_text(json.dumps(REQUIREMENTS))
+    if Path(sys.prefix) != environment:
+        os.execv(str(python), [str(python), str(Path(__file__).resolve()), *sys.argv[1:]])
+
+
+def scan(scope, scratch):
+    output = Path(tempfile.mkdtemp(prefix="map-", dir=scratch))
+    config = {
+        "project_name": "architecture",
+        "loglevel": "error",
+        "analyses": [{
+            "analysis_name": "structure",
+            "source_directory": str(scope),
+            "only_permit_languages": ["py", "typescript"],
+            "only_permit_file_extensions": [".py", ".ts", ".tsx"],
+            "ignore_directories_containing": [
+                ".git", ".venv", "venv", "env", "tests", "test", "__pycache__",
+                "node_modules", "dist", "build",
+            ],
+            "file_scan": ["dependency_graph", "fan_in_out", "louvain_modularity"],
+            "export": [{"directory": str(output)}, "json", "d3"],
+        }],
+    }
+    config_path = output / "config.yaml"
+    # JSON is valid YAML; no extra configuration parser is needed here.
+    config_path.write_text(json.dumps(config))
+    env = dict(os.environ, PYTHONDONTWRITEBYTECODE="1", OPENBLAS_NUM_THREADS="1", OMP_NUM_THREADS="1")
+    with (output / "emerge.log").open("w") as log:
+        result = subprocess.run(
+            [str(Path(sys.prefix) / "bin/emerge"), "-c", str(config_path)],
+            cwd=output, env=env, stdout=log, stderr=subprocess.STDOUT,
+        )
+    required = ["emerge-file_result_dependency_graph-data.json", "emerge-statistics-and-metrics.json"]
+    if not all((output / name).is_file() for name in required):
+        raise RuntimeError(f"Emerge exports missing (exit {result.returncode}); see {output / 'emerge.log'}")
+    if result.returncode:
+        print(f"Emerge exited {result.returncode}; exports exist, continuing (see {output / 'emerge.log'}).", file=sys.stderr)
+    return output
+
+
+def load_export(output):
+    import networkx as nx
+
+    data = json.loads((output / "emerge-file_result_dependency_graph-data.json").read_text())
+    graph = nx.node_link_graph(data)
+    files = {node for node, attrs in graph.nodes(data=True) if "absolute_name" in attrs}
+    metrics = json.loads((output / "emerge-statistics-and-metrics.json").read_text())
+    modularity = metrics.get("overall-metrics", {}).get("louvain-modularity-dependency-graph")
+    return graph, files, modularity
+
+
+def read_churn(scope):
+    try:
+        result = subprocess.run(
+            ["git", "-C", str(scope), "log", "--numstat", "-z", "--format=", "--no-renames",
+             "--relative", f"--since={SINCE}", "--", "."],
+            capture_output=True,
+        )
+    except OSError:
+        return None
+    if result.returncode:
+        return None
+    churn = defaultdict(lambda: [0, 0])
+    for entry in result.stdout.split(b"\0"):
+        if not entry:
+            continue
+        added, deleted, name = entry.lstrip(b"\n").split(b"\t", 2)
+        counts = churn[os.fsdecode(name)]
+        counts[0] += 1
+        if added.isdigit() and deleted.isdigit():
+            counts[1] += int(added) + int(deleted)
+    return churn
+
+
+def relative_name(node, scope):
+    return str(PurePosixPath(node).relative_to(scope.name))
+
+
+def compact(items):
+    items = list(items)
+    return ", ".join(items[:5]) + (f", ... ({len(items) - 5} more)" if len(items) > 5 else "")
+
+
+def summary(graph, files, modularity, scope, churn):
+    import networkx as nx
+
+    def counts(node):
+        return (churn or {}).get(relative_name(node, scope), [0, 0])
+
+    def rank(node):
+        changes, lines = counts(node)
+        coupling = graph.in_degree(node) * graph.out_degree(node)
+        return (-coupling * max(changes, 1), -coupling, -changes, -lines, node)
+
+    lines = [f"Scope: {scope}", f"Files: {len(files)}; external/unresolved imports: {len(graph) - len(files)}",
+             f"Modularity (Emerge, including external imports): {modularity if modularity is not None else 'unavailable'}",
+             f"Churn: git log --numstat, since {SINCE}; lines = added + deleted",
+             "Top hubs (rank = fan-in * fan-out * max(changes, 1)):"]
+    if churn is None:
+        lines.append("  Churn unavailable; ranking uses import counts only.")
+    for node in sorted(files, key=rank)[:5]:
+        changes, changed_lines = counts(node) if churn is not None else ("?", "?")
+        lines.append(f"  {relative_name(node, scope)}: fan-in={graph.in_degree(node)}, "
+                     f"fan-out={graph.out_degree(node)}, changes={changes}, churn={changed_lines}")
+
+    clusters = defaultdict(list)
+    for node in sorted(files):
+        if CLUSTER in graph.nodes[node]:
+            clusters[graph.nodes[node][CLUSTER]].append(relative_name(node, scope))
+    crossing = []
+    for cluster, members in clusters.items():
+        folders = Counter(str(PurePosixPath(member).parent) for member in members)
+        if len(folders) > 1:
+            crossing.append((cluster, members, folders))
+    crossing.sort(key=lambda group: (-len(group[1]), group[0]))
+    lines.append(f"Clusters crossing folders: {len(crossing) if clusters else 'unavailable'}")
+    for cluster, members, folders in crossing[:5]:
+        lines.append(f"  cluster {cluster} ({len(members)} files): " +
+                     compact(f"{folder} ({count})" for folder, count in folders.most_common()))
+
+    internal = graph.subgraph(files)
+    cycles = sorted((sorted(group) for group in nx.strongly_connected_components(internal)
+                     if len(group) > 1 or internal.has_edge(next(iter(group)), next(iter(group)))),
+                    key=lambda group: (-len(group), group))
+    lines.append(f"Import cycles: {len(cycles)} cyclic groups within scope")
+    for group in cycles[:5]:
+        lines.append(f"  {len(group)} files: " + compact(relative_name(node, scope) for node in group))
+    return "\n".join(lines)
+
+
+def neighbourhood(graph, files, scope, filename, imports):
+    import networkx as nx
+
+    path = Path(filename)
+    if path.is_absolute():
+        path = path.relative_to(scope)
+    seed = f"{scope.name}/{path.as_posix()}"
+    if seed not in files:
+        raise ValueError(f"Not a scanned file within {scope}: {filename}")
+    internal = graph.subgraph(files)
+    nodes = set(nx.single_source_shortest_path_length(internal.to_undirected(), seed, cutoff=imports))
+    omitted = sum(target not in files for node in nodes for target in graph.successors(node))
+    lines = [f"// Neighbourhood: {filename}; within {imports} imports in either direction",
+             f"// External/unresolved imports omitted: {omitted}", "digraph neighbourhood {"]
+    for node in sorted(nodes):
+        lines.append(f"  {json.dumps(relative_name(node, scope))};")
+    for source, target in sorted(internal.subgraph(nodes).edges()):
+        lines.append(f"  {json.dumps(relative_name(source, scope))} -> {json.dumps(relative_name(target, scope))};")
+    return "\n".join([*lines, "}"])
+
+
+def self_check():
+    import networkx as nx
+
+    scope = Path("/fixture")
+    graph = nx.DiGraph()
+    for node in ("one/a.py", "two/b.py", "two/c.py", "two/d.py"):
+        graph.add_node(f"fixture/{node}", absolute_name=f"fixture/{node}", **{CLUSTER: 0})
+    files = set(graph)
+    graph.add_edges_from([("fixture/one/a.py", "fixture/two/b.py"),
+                          ("fixture/two/b.py", "fixture/one/a.py"),
+                          ("fixture/two/c.py", "fixture/one/a.py"),
+                          ("fixture/two/d.py", "fixture/two/c.py"),
+                          ("fixture/one/a.py", "external")])
+    text = summary(graph, files, 0.25, scope, {"two/b.py": [5, 12]})
+    assert "Modularity (Emerge, including external imports): 0.25" in text
+    assert text.index("two/b.py: fan-in=1, fan-out=1, changes=5, churn=12") < text.index("one/a.py: fan-in=2")
+    assert "cluster 0 (4 files): two (3), one (1)" in text
+    assert "Import cycles: 1 cyclic groups" in text
+    assert "Churn unavailable" in summary(graph, files, None, scope, None)
+    near = neighbourhood(graph, files, scope, "two/b.py", 2)
+    assert '"two/c.py";' in near and '"two/d.py";' not in near
+    assert '"one/a.py" -> "two/b.py";' in near and '"external"' not in near
+    assert '"two/c.py";' not in neighbourhood(graph, files, scope, "two/b.py", 1)
+    print("self-check passed")
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("scope", nargs="?", type=Path, help="repository or package folder (read-only)")
+    parser.add_argument("--scratch", required=True, type=Path, help="environment and exports; outside scope")
+    parser.add_argument("--neighbourhood", metavar="FILE", help="print a DOT graph for a scope-relative file")
+    parser.add_argument("--imports", type=int, default=2, help="neighbourhood distance in either direction (default: 2)")
+    parser.add_argument("--self-check", action="store_true", help="check summary and neighbourhood on a tiny graph")
+    args = parser.parse_args()
+    if args.imports < 0:
+        parser.error("--imports must be non-negative")
+    scope = args.scope.resolve() if args.scope else None
+    scratch = args.scratch.resolve()
+    if not args.self_check and (scope is None or not scope.is_dir()):
+        parser.error("scope must be a folder")
+    if scope and (scratch == scope or scope in scratch.parents):
+        parser.error("--scratch must be outside scope")
+    scratch.mkdir(parents=True, exist_ok=True)
+    os.environ["TMPDIR"] = str(scratch)
+    bootstrap(scratch)
+    if args.self_check:
+        self_check()
+        return
+    output = scan(scope, scratch)
+    graph, files, modularity = load_export(output)
+    print(summary(graph, files, modularity, scope, read_churn(scope)))
+    if args.neighbourhood:
+        print(neighbourhood(graph, files, scope, args.neighbourhood, args.imports))
+    print(f"Exports: {output}")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, ValueError, RuntimeError, subprocess.SubprocessError) as error:
+        sys.exit(f"emerge-map: {error}")

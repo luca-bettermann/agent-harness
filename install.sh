@@ -85,7 +85,7 @@ entry() { # entry <name> <path>, content on stdin
 { echo "$mark"; cat "$dst/AGENTS.md"; } | entry claude "$root/CLAUDE.md"
 { echo "$mark"; cat "$dst/AGENTS.md"; [ -n "$inst" ] && printf '\nRead %s in full before any work: it binds this harness to this installation.\n' "$inst"; } | entry codex "$root/AGENTS.md"
 
-# Claude Code hooks, in the workspace's project settings: re-inject AGENTS and INSTANCE after compaction
+# Claude Code hooks, in the workspace's project settings: ask to reload the skills in use after compaction
 # and resume; every subagent loads its matching skills first.
 [ -s "$f" ] || echo '{}' > "$f"
 r=\"$dst/hooks/reload.sh\"

@@ -1,10 +1,11 @@
 # Instance
 
-Copy into the installation's repository as `INSTANCE.md` and pass its path to `install.sh`, which imports it from each account's entry point; don't import it anywhere else. Concrete people, paths and tools live here, never in agent-harness.
+Copy into the installation's repository as `INSTANCE.md` and pass its path to `install.sh` with the workspace root; the workspace's entry points load it, so don't import it anywhere else. Concrete people, paths and tools live here, never in agent-harness.
 
 ## People
 
 - Operator (rulings, releases; approves promotions unless a module names another owner): `<name>`
+- Accounts: `<account → who uses it>`. An account may be shared; the workspace root, not the account, selects this installation.
 - Physical systems and their owners: `<system → owner>`
 
 ## Workspace

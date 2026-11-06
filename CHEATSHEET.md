@@ -50,5 +50,6 @@ What you type. Skills marked † only run when you call them; the others also lo
 
 | Command | Does |
 | --- | --- |
-| `./install.sh [INSTANCE.md]` | Installs or updates this account (Claude Code and Codex) |
+| `./install.sh <workspace-root> [INSTANCE.md]` | Installs or updates the harness in that workspace (Claude Code and Codex) |
+| `<workspace-root>/.agent-harness/bin/claude`, `…/codex` | Starts an agent below the workspace root with its skills and hooks |
 | `git subtree pull --prefix=upstream https://github.com/mattpocock/skills.git main --squash` | Updates Matt's skills after review |

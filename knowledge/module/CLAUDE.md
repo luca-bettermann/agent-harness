@@ -1,8 +1,8 @@
-@~/.agent-harness/knowledge/SCHEMA.md
+@<workspace root>/.agent-harness/knowledge/SCHEMA.md
 
 # <Module name>
 
-Read `~/.agent-harness/knowledge/SCHEMA.md` first; it holds this module's rules.
+Read `<workspace root>/.agent-harness/knowledge/SCHEMA.md` first; it holds this module's rules.
 
 - **Audience:** <who reads this module>
 - **Owner:** <who approves promotions; the operator by default>

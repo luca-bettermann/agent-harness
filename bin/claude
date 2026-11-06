@@ -1,0 +1,19 @@
+#!/bin/sh
+# Launcher for claude and codex (this file's name; codex links here). Below the workspace root the clients
+# miss the workspace's harness: Claude Code reads skills and hooks only from the project (git) root,
+# Codex AGENTS.md and skills only from the git root down. Elsewhere the client runs unchanged.
+n=$(basename "$0")
+bin=$(cd "$(dirname "$0")" && pwd)
+root=$(dirname "$(dirname "$bin")")
+real=
+IFS=:
+for d in $PATH; do
+  [ -x "$d/$n" ] && [ "$(cd "$d" 2>/dev/null && pwd)" != "$bin" ] && { real=$d/$n; break; }
+done
+unset IFS
+[ -n "$real" ] || { echo "$n: not found on PATH" >&2; exit 127; }
+case $n:$PWD/ in
+  claude:"$root"/?*) exec "$real" --add-dir "$root" --settings "$root/.claude/settings.json" "$@" ;;
+  codex:"$root"/*) exec "$real" -c 'project_root_markers=[".agent-harness"]' "$@" ;;
+esac
+exec "$real" "$@"

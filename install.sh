@@ -1,27 +1,33 @@
 #!/bin/sh
-# Install agent-harness for the current account (Claude Code and Codex).
-# Usage: install.sh [path/to/INSTANCE.md]   (remembered for later runs)
+# Install agent-harness into a workspace root for Claude Code and Codex. Nothing is written outside that root,
+# so the harness applies only to sessions working under it, whichever account runs them.
+# Usage: install.sh <workspace-root> [path/to/INSTANCE.md]   (INSTANCE is remembered for later runs)
 # Rerun after updating the checkout. A foreign or edited entry file is moved aside as *.pre-harness[.N].
 set -eu
 src=$(cd "$(dirname "$0")" && pwd)
-dst=$HOME/.agent-harness
-f=$HOME/.claude/settings.json
 die() { echo "install.sh: $*" >&2; exit 1; }
+[ $# -ge 1 ] || die "usage: install.sh <workspace-root> [INSTANCE.md]"
+[ -d "$1" ] || die "no workspace root at $1"
+root=$(cd "$1" && pwd)
+# Entry files at or above a home directory would reach every session of that account.
+case $HOME/ in "${root%/}"/*) die "$root contains $HOME: install into a workspace root, never account-wide";; esac
+dst=$root/.agent-harness
+f=$root/.claude/settings.json
 trap 'rm -rf "$dst.new" "$f.tmp"' EXIT
 
 # Check everything before writing anything.
 command -v jq >/dev/null || die "needs jq"
 [ ! -e "$f" ] || jq empty "$f" 2>/dev/null || die "$f is not valid JSON"
-inst=${1:-$(cat "$dst/instance-path" 2>/dev/null || true)}
+inst=${2:-$(readlink "$dst/INSTANCE.md" 2>/dev/null || true)}
 if [ -n "$inst" ]; then
   [ -f "$inst" ] || die "no INSTANCE file at $inst"
   inst=$(cd "$(dirname "$inst")" && pwd)/$(basename "$inst")
 fi
 
-# Build: AGENTS, hook, knowledge, and the skills with their addenda appended.
+# Build: AGENTS, hooks, launcher, knowledge, and the skills with their addenda appended.
 rm -rf "$dst.new"
 mkdir -p "$dst.new/skills"
-cp -r "$src/AGENTS.md" "$src/hooks" "$src/knowledge" "$dst.new/"
+cp -r "$src/AGENTS.md" "$src/hooks" "$src/bin" "$src/knowledge" "$dst.new/"
 for d in "$src"/upstream/skills/engineering/*/ "$src"/upstream/skills/productivity/*/ "$src"/engineering/*/ "$src"/knowledge/*/; do
   n=$(basename "$d")
   [ -f "$d/SKILL.md" ] || continue
@@ -35,13 +41,13 @@ done
 for a in "$src"/engineering/addenda/*.md; do
   [ -d "$dst.new/skills/$(basename "$a" .md)" ] || echo "warning: addendum without skill: $a" >&2
 done
-[ -n "$inst" ] && echo "$inst" > "$dst.new/instance-path"
+[ -n "$inst" ] && ln -s "$inst" "$dst.new/INSTANCE.md"
 [ -d "$dst/written" ] && mv "$dst/written" "$dst.new/"
 mkdir -p "$dst.new/written"
 rm -rf "$dst"
 mv "$dst.new" "$dst"
 
-# Skill links: only links into $dst are ours to replace or remove.
+# Links: only links into $dst are ours to replace or remove.
 ours() { [ -L "$1" ] && case $(readlink "$1") in "$dst"/*) true;; *) false;; esac; }
 link() {
   if [ -e "$2" ] || [ -L "$2" ]; then
@@ -49,18 +55,22 @@ link() {
   fi
   ln -sfn "$1" "$2"
 }
-mkdir -p "$HOME/.claude/skills" "$HOME/.codex/skills"
+# Skills: Claude Code reads .claude/skills, Codex .agents/skills, from the project root.
+mkdir -p "$root/.claude/skills" "$root/.agents/skills"
 for s in "$dst"/skills/*/; do
   n=$(basename "$s")
-  link "$dst/skills/$n" "$HOME/.claude/skills/$n"
-  link "$dst/skills/$n" "$HOME/.codex/skills/$n"
+  link "$dst/skills/$n" "$root/.claude/skills/$n"
+  link "$dst/skills/$n" "$root/.agents/skills/$n"
 done
-for l in "$HOME"/.claude/skills/* "$HOME"/.codex/skills/*; do
+# Claude Code reads CLAUDE.local.md in every directory above the session, nested repositories included.
+[ -n "$inst" ] && link "$dst/INSTANCE.md" "$root/CLAUDE.local.md"
+for l in "$root"/.claude/skills/* "$root"/.agents/skills/* "$root/CLAUDE.local.md"; do
   if ours "$l" && [ ! -e "$l" ]; then rm "$l"; fi
 done
 
-# Entry points: AGENTS plus the installation's INSTANCE. A file that isn't
-# exactly what this script last wrote (foreign, symlinked or edited) is moved aside.
+# Entry points. Claude Code reads CLAUDE.md upward from any nested repository, but skips @imports outside
+# that repository, so AGENTS is written in full. A file that isn't exactly what this script last wrote
+# (foreign, symlinked or edited) is moved aside.
 mark='<!-- written by agent-harness install.sh; edits here are moved aside on the next install -->'
 entry() { # entry <name> <path>, content on stdin
   cat > "$dst/written/$1.new"
@@ -72,22 +82,17 @@ entry() { # entry <name> <path>, content on stdin
   cp "$dst/written/$1.new" "$2"
   mv "$dst/written/$1.new" "$dst/written/$1"
 }
-mkdir -p "$HOME/.claude" "$HOME/.codex"
-{ echo "$mark"; echo "@$dst/AGENTS.md"; [ -n "$inst" ] && echo "@$inst"; } | entry claude "$HOME/.claude/CLAUDE.md"
-{ echo "$mark"; cat "$dst/AGENTS.md"; [ -n "$inst" ] && printf '\nRead %s in full before any work: it binds this harness to this installation.\n' "$inst"; } | entry codex "$HOME/.codex/AGENTS.md"
+{ echo "$mark"; cat "$dst/AGENTS.md"; } | entry claude "$root/CLAUDE.md"
+{ echo "$mark"; cat "$dst/AGENTS.md"; [ -n "$inst" ] && printf '\nRead %s in full before any work: it binds this harness to this installation.\n' "$inst"; } | entry codex "$root/AGENTS.md"
 
-# Claude Code: re-inject AGENTS and INSTANCE after compaction and resume.
+# Claude Code hooks, in the workspace's project settings: re-inject AGENTS and INSTANCE after compaction
+# and resume; every subagent loads its matching skills first.
 [ -s "$f" ] || echo '{}' > "$f"
-c=$dst/hooks/reload.sh
-q="\"$c\""
-jq --arg c "$c" --arg q "$q" '.hooks.SessionStart = ([.hooks.SessionStart[]? | select(.hooks[0].command != $c and .hooks[0].command != $q)]
-  + [{matcher: "compact|resume", hooks: [{type: "command", command: $q}]}])' "$f" > "$f.tmp"
-cat "$f.tmp" > "$f"
-# Claude Code: every subagent loads its matching skills first.
-c=$dst/hooks/subagent-start.sh
-q="\"$c\""
-jq --arg q "$q" '.hooks.SubagentStart = ([.hooks.SubagentStart[]? | select(.hooks[0].command != $q)]
-  + [{hooks: [{type: "command", command: $q}]}])' "$f" > "$f.tmp"
+r=\"$dst/hooks/reload.sh\"
+s=\"$dst/hooks/subagent-start.sh\"
+jq --arg r "$r" --arg s "$s" '
+  .hooks.SessionStart = ([.hooks.SessionStart[]? | select(.hooks[0].command != $r)] + [{matcher: "compact|resume", hooks: [{type: "command", command: $r}]}])
+  | .hooks.SubagentStart = ([.hooks.SubagentStart[]? | select(.hooks[0].command != $s)] + [{hooks: [{type: "command", command: $s}]}])' "$f" > "$f.tmp"
 cat "$f.tmp" > "$f"
 rm -f "$f.tmp"
-echo "installed into $dst"
+echo "installed into $root; below it, start agents with $dst/bin/claude or $dst/bin/codex"

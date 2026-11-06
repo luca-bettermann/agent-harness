@@ -1,24 +1,23 @@
 # Instance
 
-Copy into the installation's repository as `INSTANCE.md` and import it from the workspace `CLAUDE.md`. Concrete people, paths and tools live here, never in agent-harness.
+Copy into the installation's repository as `INSTANCE.md` and pass its path to `install.sh`, which imports it from each account's entry point; don't import it anywhere else. Concrete people, paths and tools live here, never in agent-harness.
 
 ## People
 
-- Operator (rulings, promotions, releases): `<name>`
+- Operator (rulings, releases; approves promotions unless a module names another owner): `<name>`
 - Physical systems and their owners: `<system → owner>`
 
 ## Workspace
 
-- Workspace root and work root: `<paths>`
+- Workspace root, work root and scratch root: `<paths>`
 - Repository manifest (vcs2l): `<path to .repos>`
-- Knowledge modules: `<module → path, owner>`
+- Knowledge modules: `<module → path, owner, contribution rules>`
 - Credential store: `<password-manager reference, never a value>`
 
 ## Tools
 
-- Issue tracker and its mapping: `<tracker>`, `docs/agents/`
+- Issue tracker: `<tracker>`; teams: `<team → scope>`; mapping: `<absolute path of this repository>/docs/agents/` (read it before any tracker skill)
 - Hosting and CI: `<host>`; time budget per run: `<minutes>`
-- Add-ons: `<name → on or off>`
 
 ## Models
 

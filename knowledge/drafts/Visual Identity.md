@@ -1,4 +1,4 @@
-Owns legibility, semantic comparison, export and rendered inspection for figures, diagrams and presentations. Writing Guide owns diagram language; Academic Writing and the venue own publication constraints. INSTANCE names the one executable style authority and template owners; concrete palette, font and marker constants belong to that style authority, not here.
+Owns legibility, semantic comparison, export and rendered inspection for figures, diagrams and presentations. Academic Writing and the venue own publication constraints. INSTANCE names the one executable style authority and template owners; concrete palette, font and marker constants belong to that style authority, not here.
 
 ## One executable style
 
@@ -22,7 +22,7 @@ Visual encodings make comparisons readable without obscuring or exaggerating the
 - Bounded comparable quantities use one shared fixed scale; fitting data is an explicit figure choice. Raw quantities are neutral unless the domain declares a judgment.
 - Ordered series use progressions distinct from surface colormaps. Comparable panels share a colorbar; use direct labels when they clarify without covering data.
 - Axis labels include units. Markers, line widths and typography come from the style owner; distinguish evidence and claims without inventing competing thresholds.
-- Use legible diagram terms and relationship verbs under Writing Guide; preserve domain phase and layer semantics from the instance owner.
+- Use legible diagram terms and relationship verbs; preserve domain phase and layer semantics from the instance owner.
 
 ## Render before handoff
 

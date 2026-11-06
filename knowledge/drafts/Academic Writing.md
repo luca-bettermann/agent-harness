@@ -1,4 +1,4 @@
-Owns evidence-bearing papers and reports, contribution argument, revision and submission. Literature Review owns source discovery and notes; Writing Guide owns general prose; Documentation System owns facts and history; Visual Identity and the current venue own figure presentation. INSTANCE binds language, venue, tooling and templates.
+Owns evidence-bearing papers and reports, contribution argument, revision and submission. Literature Review owns source discovery and notes; the knowledge schema owns facts and history; Visual Identity and the current venue own figure presentation. INSTANCE binds language, venue, tooling and templates.
 
 ## Evidence bounds claims
 

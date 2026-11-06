@@ -1,4 +1,4 @@
-Owns discovery, source intake, assessment and cross-source synthesis. Writing Guide owns prose; Documentation System owns layers; Academic Writing owns manuscript integration. INSTANCE names baseline and library stores, manager, PDFs and templates.
+Owns discovery, source intake, assessment and cross-source synthesis. The knowledge schema owns homes; Academic Writing owns manuscript integration. INSTANCE names baseline and library stores, manager, PDFs and templates.
 
 ## Sources own claims
 
@@ -8,7 +8,7 @@ Every extracted claim remains traceable to the source that supports it.
 **Violating:** An abstract is treated as full-paper evidence or a stale baseline becomes an unqualified current claim.
 **Detailed rules:**
 - Verify metadata and quotations against published sources. Per-source notes hold faithful extracts and highlights and relevance, not cross-source arguments.
-- Check baseline dates and revisions. Use configured read-only existing library access and lawful publisher and index discovery. Secret handling remains AGENTS.
+- Check baseline dates and revisions. Use configured read-only existing library access and lawful publisher and index discovery.
 - If full text is unavailable, report title, persistent identifier and relevance reason; do not infer findings from an abstract.
 
 ## Separate intake and synthesis

@@ -42,6 +42,8 @@ Three repositories, each pinned by the next:
 
 A project is a spec, its issues are thin slices with blocking links (`to-spec`, `to-tickets`). `implement-spec` starts one fresh subagent per unblocked issue on its own branch and worktree, merges each finished issue into `project/<slug>`, and ends with one `code-review` of the project branch. One merge request per repository brings the project into `main`. CI runs only the jobs a change affects.
 
+See [CHEATSHEET.md](CHEATSHEET.md) for the commands you use day to day.
+
 ## Install
 
 Requires `jq`. Run once per account, and again after updating this checkout:

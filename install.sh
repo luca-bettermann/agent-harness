@@ -83,4 +83,11 @@ q="\"$c\""
 jq --arg c "$c" --arg q "$q" '.hooks.SessionStart = ([.hooks.SessionStart[]? | select(.hooks[0].command != $c and .hooks[0].command != $q)]
   + [{matcher: "compact|resume", hooks: [{type: "command", command: $q}]}])' "$f" > "$f.tmp"
 cat "$f.tmp" > "$f"
+# Claude Code: every subagent loads its matching skills first.
+c=$dst/hooks/subagent-start.sh
+q="\"$c\""
+jq --arg q "$q" '.hooks.SubagentStart = ([.hooks.SubagentStart[]? | select(.hooks[0].command != $q)]
+  + [{hooks: [{type: "command", command: $q}]}])' "$f" > "$f.tmp"
+cat "$f.tmp" > "$f"
+rm -f "$f.tmp"
 echo "installed into $dst"

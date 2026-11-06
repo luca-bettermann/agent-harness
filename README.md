@@ -5,6 +5,7 @@ A harness for coding and research agents (Claude Code, Codex): shared principles
 - [Concept](docs/concept.md): axes, layers, layout and flow
 - [Cheat sheet](CHEATSHEET.md): the commands you use day to day
 - [Install details](docs/install.md): what the installer writes, the launcher, removing an old install
+- [Decisions](docs/adr/): why the harness works the way it does
 
 ## Requirements
 

@@ -11,7 +11,7 @@ Each axis has one owner. Replacing a tool may need data migration and new instru
 | Knowledge | Durable concepts, decisions, sources and explanations | Karpathy-style Markdown wiki in modules (`knowledge/`) |
 | Task management | Work items, owners, progress, blockers and handoffs | Linear |
 | Repository workspace | Repositories, branches, merge requests and CI | Git, vcs2l, GitLab |
-| Code structure | Where code concepts live and how they depend on each other, as derived diagrams | Emerge, Mermaid, AsyncAPI and OpenAPI |
+| Code structure | Where code concepts live and how they depend on each other, as derived diagrams | Emerge, TikZ, AsyncAPI and OpenAPI |
 | Doctrine | Principles, workflows as skills, and enforcement | `AGENTS.md`, `engineering/`, Matt Pocock's skills |
 | Agent execution | Sessions, dispatch, models and budgets | Claude Code, Codex; `implement-spec` |
 

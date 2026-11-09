@@ -1,0 +1,21 @@
+name: Knowledge indexes
+description: Regenerate a knowledge module's index.md files from page descriptions and commit them when they change.
+inputs:
+  module:
+    description: Module directory, relative to the checkout.
+    default: .
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      env:
+        MODULE: ${{ inputs.module }}
+      run: |
+        python3 "$GITHUB_ACTION_PATH/index.py" "$MODULE" >/dev/null
+        git add -A -- ':(glob)**/index.md'
+        git diff --cached --quiet && exit 0
+        git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+          commit -q -m "Regenerate indexes"
+        # A push from GITHUB_TOKEN starts no new run. A concurrent push is rebased over; the next run catches up.
+        for _ in 1 2 3; do git pull -q --rebase && git push -q && exit 0; sleep 5; done
+        exit 1

@@ -22,7 +22,7 @@ Permanent knowledge changes only through a promotion the module's owner (named i
 - **Raw sources** (papers, transcripts, exports) stay unchanged in the module's `raw/` folder.
 - **Ingest:** a new source or accepted decision updates the pages it affects. Revise an existing page before adding one, and merge or retire superseded content.
 - **Query:** start at the index, follow links, and cite the pages and sources an answer uses. An answer worth keeping becomes a promotion proposal.
-- **Lint:** find contradictions, stale claims, orphan pages, missing links, index entries out of step with page descriptions, and gaps; report them as proposals. `knowledge/index.py <module>` regenerates every `index.md` from the descriptions; `--check` fails when one is out of date.
+- **Lint:** find contradictions, stale claims, orphan pages, missing links, index entries out of step with page descriptions, and gaps; report them as proposals. `knowledge/index.py <module>` regenerates every `index.md` from the descriptions; `--check` fails when one is out of date. A Git-hosted module regenerates them on every push with the action `knowledge/action.yml`.
 
 ## Update triggers
 

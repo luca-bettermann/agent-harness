@@ -2,6 +2,8 @@
 
 A harness for coding and research agents (Claude Code, Codex): shared principles, workflow skills and a knowledge schema, installed into one workspace. Built on [Matt Pocock's skills](https://github.com/mattpocock/skills), kept unchanged in `upstream/`; our short additions to them live in [`engineering/addenda/`](engineering/addenda/). An installation maps the skills onto its infrastructure in its own `docs/agents/` and names its people, paths and tools in its `INSTANCE.md`.
 
+The harness is split into independent axes, each with one owner: knowledge, task management, repository workspace, code structure, doctrine and agent execution. Any tool behind an axis can be replaced without touching the others ([Concept](docs/concept.md)).
+
 - [Concept](docs/concept.md): axes and flow
 - [Install details](docs/install.md): what the installer writes and why the launcher
 - [Decisions](docs/adr/): why the harness works the way it does
@@ -27,7 +29,7 @@ An agent CLI ([Claude Code](https://claude.com/claude-code) or [Codex](https://g
 ./install.sh /path/to/workspace /path/to/INSTANCE.md
 ```
 
-Then start agents below the workspace with `/path/to/workspace/.agent-harness/bin/claude` or `.../bin/codex`. Rerun the install after updating this checkout.
+Then start agents below the workspace with `/path/to/workspace/.agent-harness/bin/claude` or `.../bin/codex`. Rerun the install after updating this checkout or installing another client.
 
 ## Update upstream
 

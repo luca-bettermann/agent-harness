@@ -9,7 +9,8 @@ Everything is written under the workspace root, nothing into a home directory; a
 | `CLAUDE.local.md` | link to INSTANCE, read the same way |
 | `AGENTS.md` | AGENTS plus a pointer to INSTANCE, for Codex |
 | `.claude/skills/`, `.agents/skills/` | links to the skills, for Claude Code and Codex |
-| `.claude/settings.json` | Claude Code hooks: `SessionStart` asks to reload the skills in use after compaction and resume (AGENTS and INSTANCE come back by themselves as memory files); `SubagentStart` has every subagent load its matching skills first. Other settings stay. |
+| `.claude/settings.json` | Claude Code hooks: `SessionStart` asks to reload the skills in use after compaction and resume (AGENTS and INSTANCE come back by themselves as memory files); `SubagentStart` has every subagent load its matching skills first; the read-gate, builder-prompt and merge-checklist hooks (see README). Other settings stay. |
+| `.claude/agents/builder.md` | link to the `builder` agent type, started with `Implement <ISSUE-ID>.` |
 
 An entry file it didn't write, or one edited since, is moved aside as `*.pre-harness` (numbered when one exists); a skill or INSTANCE link it didn't make is left alone with a warning. `setup-matt-pocock-skills` is installed like the other upstream skills; run it to generate an installation's `docs/agents/`.
 

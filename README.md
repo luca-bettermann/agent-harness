@@ -15,7 +15,7 @@ Three layers, each with one job:
 
 ## Hooks
 
-Claude Code hooks enforce three rules at the point of use: the first call per session to a tracker tool (pattern and mapping file from the installation's INSTANCE) is refused until the mapping is read; a `builder` subagent's prompt must be exactly `Implement <ISSUE-ID>.`; after a merge into `project/*` or a `merge_requests/<iid>/merge` call, the mapping's tracker checklist is injected. Each script runs a self-check with `--check`. Codex has no such hooks and gets the same rules as text only.
+Claude Code hooks enforce three rules at the point of use: a tracker tool call (pattern and mapping file from the installation's INSTANCE) is refused until the mapping file has been read, separately for the session and each subagent and again after compaction; a `builder` subagent's prompt must be exactly `Implement <ISSUE-ID>.`; after a merge into `project/*` or a `merge_requests/<iid>/merge` call, the mapping's tracker checklist is injected. Each script runs a self-check with `--check`. Codex has no such hooks and gets the same rules as text only.
 
 ## Requirements
 

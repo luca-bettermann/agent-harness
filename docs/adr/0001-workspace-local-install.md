@@ -1,0 +1,3 @@
+# Installed per workspace, never per account
+
+Accounts are often shared, so an account-wide install made every session on the account follow one person's doctrine and INSTANCE. The installer writes only under a workspace root and refuses a root that contains `$HOME`. Because Claude Code loads skills and hooks only from the git root, and Codex reads `AGENTS.md` only from the git root down, sessions in nested repositories start through a small launcher that adds the workspace for that session only; every account-wide alternative (`CLAUDE_CONFIG_DIR`, `CODEX_HOME`, global settings) would have recreated the problem.

@@ -1,96 +1,41 @@
-# Instance bindings
+# Instance
 
-Copy this file to `INSTANCE.md` in a private instance. Replace every placeholder and keep concrete people, paths, remotes, repository names, ports, venues, templates, and domain terminology here rather than in the public doctrine.
+Copy into the installation's repository as `INSTANCE.md` and pass its path to `install.sh` with the workspace root; the workspace's entry points load it, so don't import it anywhere else. Concrete people, paths and tools live here, never in agent-harness.
 
-## Core and workspace
+## People
 
-- Operator: `<name or role>`
-- Workspace root: `<absolute or documented relative path>`
-- Private origin: `<private Git remote>`
-- Board: `<path from vault.toml>`
-- Task folders: `<paths from vault.toml>`
-- Canonical repository clones: `<workspace>/<repos from vault.toml>/<repo>`
-- Startup scopes and branch or pin targets: `<typed [scopes] entries in vault.toml>`
-- Evergreen personal knowledge store: `<path or repository>`
-- Team knowledge store: `<independent path or repository>`
-- Read-only context documents: `<path or none>`
+- Operator (rulings, releases; approves promotions unless a module names another owner): `<name>`
+- Accounts: `<account → who uses it>`. An account may be shared; the workspace root, not the account, selects this installation.
+- Physical systems and their owners: `<system → owner>`
 
-## Landing transport
+## Workspace
 
-- Hosting and review surface: `<for example, GitLab merge requests>`
-- Human authority for spend, design, review, and promotion: `<name or role>`
-- Release or deployment bindings: `<links to their existing authorities>`
-- Additional synchronization commands: `<commands required by this instance>`
+- Workspace root, work root and scratch root: `<paths>`
+- Repository manifest (vcs2l): `<path to .repos>`
+- Knowledge modules: `<module → path, owner, contribution rules>`
+- Credential store: `<password-manager reference, never a value>`
 
-## Models and dispatch
+## Tools
 
-- Tier-to-model map: `<current model for each tier and vendor>`
-- Client recovery: `<client-specific recovery commands and wait bounds>`
-- Audit routing: `<models for enumeration, synthesis and cold review>`
+- Issue tracker: `<tracker>`; teams: `<team → scope>`; mapping: `<absolute path of this repository>/docs/agents/` (read it before any tracker skill)
+- Hosting and CI: `<host>`; time budget per run: `<minutes>`
 
-## Agent extensions
+## Models
 
-The marked table is the only inventory for native skill wrappers. Each `Work`
-cell ends with a stable route ID. Each `Read` cell links ordered sources from the
-public base through private supplements to applicable instance knowledge. Add a
-knowledge link only after its target exists. Every client exposes the same rows;
-its adapter may add a stable native name prefix. Later sources may override an
-explicit preference only in their stated scope; prose cannot override an enforced
-schema or a rule outside that scope.
+| Tier | Model | Cost weight |
+| --- | --- | --- |
+| T1 | `<model>` | 8 |
+| T2 | `<model>` | 4 |
+| T3 | `<model>` | 2 |
+| T4 | `<model>` | 1 |
 
-<!-- BEGIN NATIVE SKILL ROUTES -->
-| Work | Read |
-| --- | --- |
-| Writing and editing (`writing`) | [base](doctrine/Writing%20Guide.md) → [instance](INSTANCE.md) |
-<!-- END NATIVE SKILL ROUTES -->
+- Cost cap per vendor: `<units>`; vendor order: `<vendors>`
+- Budget: start a subagent only while running subagents stay within the cap; builders run on the default build tier, a higher tier needs a reason on the issue.
 
-## Safety and security scope
+## Delivery
 
-- Human owners for physical systems: `<links to the owning repository context files>`
-- Credential store: `<password-manager reference, never a credential value>`
-- Physical-safety scope: `<operating scale and required gates>`
-- Security scope: `<required protections and explicit limits>`
+- Where reports (architecture reports, project reports) are delivered so the operator can read them: `<channel>`. A local file and its path are not delivery.
 
-## Coding
+## Harness hook configuration
 
-- Repository dependency map: `<link or path>`
-- Console-output convention: `<link or path>`
-- Required environment exceptions: `<repository and its authoritative instructions>`
-
-## Architecture
-
-- Domain architecture authorities: `<links to existing notes>`
-- Versioning or deployment contracts: `<links to existing notes>`
-
-## Frontend
-
-- Preview surfaces and ports: `<name and port>`
-- Browser journey tool: `<tool per repository>`
-
-## Notes
-
-- Knowledge-base root: `<path>`
-- Naming prefixes and their domains: `<table or link to its existing authority>`
-- Retention and deletion authority: `<link>`
-
-## Literature review
-
-- Context-document store: `<path>`
-- Per-source note store and filename convention: `<path and convention>`
-- Synthesis-note store: `<path>`
-- Reference manager and PDF access: `<tools and read-only mount>`
-- Literature-note template: `<path or link>`
-
-## Academic writing
-
-- Language and spelling: `<variant>`
-- Target venues: `<venues>`
-- Manuscript template and bibliography style: `<settings>`
-- Draft and collaboration host: `<service or remote>`
-- Report and manuscript storage: `<paths>`
-
-## Visual identity
-
-- Shared style module: `<import path or repository>`
-- Domain-specific semantic colour mapping: `<link or table>`
-- Presentation and poster templates: `<paths>`
+- Mapping read-gate: tracker tool pattern `<shell glob of the tracker's write tools, e.g. mcp__linear__save_*>` (the hook refuses them until the mapping file is read); mapping file `<absolute path to docs/agents/issue-tracker.md>`. Its section `## Tracker checklist ...` is shown after every merge into a project branch.

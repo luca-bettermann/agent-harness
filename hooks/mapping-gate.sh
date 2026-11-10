@@ -1,6 +1,6 @@
 #!/bin/sh
 # PreToolUse hook: a call to a tool matching the installation's tracker pattern is refused until the session has read
-# the mapping file (PostToolUse on Read records it). SessionEnd removes the state. `sh mapping-gate.sh --check`.
+# the mapping file (PostToolUse on Read records it), per session and per subagent. Compaction, resume and SessionEnd reset it. `sh mapping-gate.sh --check`.
 # Pattern and file: INSTANCE "Mapping read-gate: tracker tool pattern `P` ...; mapping file `F`".
 d=$(cd "$(dirname "$0")" && pwd)
 inst=${HARNESS_INSTANCE:-$d/../INSTANCE.md}
@@ -13,13 +13,16 @@ if [ "${1:-}" = --check ]; then
   printf '{"session_id":"s1","hook_event_name":"PostToolUse","tool_name":"Read","tool_input":{"file_path":"/m.md"}}' | sh "$0"
   run PreToolUse mcp__trk__save_issue || { echo FAIL: call after read refused; exit 1; }
   run PreToolUse Bash || { echo FAIL: other tool refused; exit 1; }
+  printf '{"session_id":"s1","agent_id":"a1","hook_event_name":"PreToolUse","tool_name":"mcp__trk__save_issue"}' | sh "$0" 2>/dev/null && { echo FAIL: subagent inherited the read; exit 1; }
+  run SessionStart ""; run PreToolUse mcp__trk__save_issue && { echo FAIL: read survived compaction; exit 1; }
   run SessionEnd ""; run PreToolUse mcp__trk__save_issue && { echo FAIL: state not removed; exit 1; }
   rm -rf "$t"; echo ok; exit 0
 fi
 in=$(cat)
-sid=$(printf %s "$in" | jq -r '.session_id | gsub("[^A-Za-z0-9_-]"; "")')
+# One state per context: the session, or a subagent within it (agent_id). Compaction and resume start a new context.
+sid=$(printf %s "$in" | jq -r '(.session_id + "-" + (.agent_id // "main")) | gsub("[^A-Za-z0-9_-]"; "")')
 state=${TMPDIR:-/tmp}/agent-harness-gate-$sid
-[ "$(printf %s "$in" | jq -r .hook_event_name)" = SessionEnd ] && { rm -f "$state"; exit 0; }
+case $(printf %s "$in" | jq -r .hook_event_name) in SessionEnd|SessionStart) rm -f "$state"; exit 0;; esac
 pat=$(sed -n 's/^- Mapping read-gate: tracker tool pattern `\([^`]*\)`.*/\1/p' "$inst" 2>/dev/null)
 map=$(sed -n 's/.*mapping file `\([^`]*\)`.*/\1/p' "$inst" 2>/dev/null)
 [ -n "$pat" ] || exit 0

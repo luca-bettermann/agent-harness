@@ -1,6 +1,6 @@
 # Install details
 
-Everything is written under the workspace root, nothing into a home directory; a root that contains `$HOME` is refused. Accounts may be shared: a session outside the root gets nothing from the harness.
+Everything is written under the workspace root; a root that contains `$HOME` is refused. The one exception: Codex accepts project trust only from the account's own config, so the installer adds `[projects."<root>"] trust_level = "trusted"` to `${CODEX_HOME:-~/.codex}/config.toml` when Codex is installed and the root has no entry yet. Accounts may be shared: a session outside the root gets nothing from the harness.
 
 | Written under the root | For |
 | --- | --- |
@@ -9,7 +9,7 @@ Everything is written under the workspace root, nothing into a home directory; a
 | `CLAUDE.local.md` | link to INSTANCE, read the same way |
 | `AGENTS.md` | AGENTS plus a pointer to INSTANCE, for Codex |
 | `.claude/skills/`, `.agents/skills/` | links to the skills, for Claude Code and Codex |
-| `.claude/settings.json`, `.codex/hooks.json` | the `load-skills.sh` hook for Claude Code and Codex on `UserPromptSubmit`, `SubagentStart` and `SessionStart` after compaction or resume (AGENTS and INSTANCE come back by themselves). Earlier entries pointing into `.agent-harness/hooks/` are replaced; other settings stay. Codex runs project hooks only after the account trusts the workspace and reviews them in `/hooks`. |
+| `.claude/settings.json`, `.codex/hooks.json` | the `load-skills.sh` hook for Claude Code and Codex on `UserPromptSubmit`, `SubagentStart` and `SessionStart` after compaction or resume (AGENTS and INSTANCE come back by themselves). Earlier entries pointing into `.agent-harness/hooks/` are replaced; other settings stay. Codex runs them once the account has reviewed them: the first Codex session below the root asks once ("Trust all and continue"). |
 
 An entry file it didn't write, or one edited since, is moved aside as `*.pre-harness` (numbered when one exists); a skill or INSTANCE link it didn't make is left alone with a warning. `setup-matt-pocock-skills` is installed like the other upstream skills; run it to generate an installation's `docs/agents/`.
 

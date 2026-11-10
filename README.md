@@ -15,7 +15,7 @@ A harness for coding and research agents (Claude Code, Codex): shared principles
 
 ## Hooks
 
-One hook, the same for Claude Code and Codex: on every prompt, at every subagent start, and after compaction or resume, the agent is told AGENTS' skill-loading rule (`sh hooks/load-skills.sh --check`). Codex runs it once the account trusts the workspace and has reviewed the hook (`/hooks`).
+One hook, the same for Claude Code and Codex: on every prompt, at every subagent start, and after compaction or resume, the agent is told AGENTS' skill-loading rule (`sh hooks/load-skills.sh --check`). For Codex the installer trusts the workspace in the account's config; the first Codex session then asks once to trust the hook.
 
 ## Requirements
 

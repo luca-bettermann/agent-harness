@@ -1,6 +1,7 @@
 #!/bin/sh
 # Install agent-harness into a workspace root for Claude Code and Codex. Nothing is written outside that root,
-# so the harness applies only to sessions working under it, whichever account runs them.
+# so the harness applies only to sessions working under it, except one entry: Codex takes project trust only from
+# the account's config, so the running account trusts the root there.
 # Usage: install.sh <workspace-root> [path/to/INSTANCE.md]   (INSTANCE is remembered for later runs)
 # Rerun after updating the checkout. A foreign or edited entry file is moved aside as *.pre-harness[.N].
 set -eu
@@ -94,8 +95,8 @@ entry() { # entry <name> <path>, content on stdin
 
 # Hooks, in the workspace's project settings of both clients (same format): the skill-loading rule on every prompt,
 # subagent start, and session start after compaction or resume. Earlier entries pointing into $dst/hooks are
-# dropped first, so reruns don't duplicate and retired hooks go. Codex runs project hooks only once the account
-# trusts the workspace and has reviewed them (`/hooks`).
+# dropped first, so reruns don't duplicate and retired hooks go. Codex runs them once the account has
+# reviewed them: the first Codex session below the root asks once ("Trust all and continue").
 for x in "$f" "$root/.codex/hooks.json"; do
   mkdir -p "$(dirname "$x")"; [ -s "$x" ] || echo '{}' > "$x"
   jq --arg d "\"$dst/hooks/" --arg s "\"$dst/hooks/load-skills.sh\"" '
@@ -104,4 +105,9 @@ for x in "$f" "$root/.codex/hooks.json"; do
     | put("UserPromptSubmit"; null) | put("SubagentStart"; null) | put("SessionStart"; "compact|resume")' "$x" > "$x.tmp"
   cat "$x.tmp" > "$x"; rm -f "$x.tmp"
 done
+# Codex trust: without it Codex ignores the root's hooks and config. An existing entry for the root is left as is.
+c=${CODEX_HOME:-$HOME/.codex}/config.toml
+if command -v codex >/dev/null && ! grep -qF "[projects.\"$root\"]" "$c" 2>/dev/null; then
+  mkdir -p "$(dirname "$c")"; printf '\n[projects."%s"]\ntrust_level = "trusted"\n' "$root" >> "$c"
+fi
 echo "installed into $root; below it, start agents with $dst/bin/claude or $dst/bin/codex"

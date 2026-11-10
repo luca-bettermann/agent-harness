@@ -21,7 +21,7 @@ One hook, the same for Claude Code and Codex: on every prompt, at every subagent
 
 ## Requirements
 
-An agent CLI ([Claude Code](https://claude.com/claude-code) or [Codex](https://github.com/openai/codex)), `git`, `jq`, a POSIX shell, and a folder of Markdown files. The installation chooses the rest: issue tracker, Git host with CI, Obsidian for reading knowledge modules, [vcs2l](https://github.com/ros-infrastructure/vcs2l) for many repositories.
+An agent CLI ([Claude Code](https://claude.com/claude-code) or [Codex](https://github.com/openai/codex)), `git`, `jq`, a POSIX shell, and a folder of Markdown files; [uv](https://docs.astral.sh/uv/) for `emerge-map`. The installation chooses the rest: issue tracker, Git host with CI, Obsidian for reading knowledge modules, [vcs2l](https://github.com/ros-infrastructure/vcs2l) for many repositories.
 
 ## Install
 

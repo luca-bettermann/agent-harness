@@ -12,7 +12,7 @@ They hold in every domain we work in: code, documentation, tests, tasks and work
 
 **Root cause.** Fix a problem where it starts: in the principle, the skill or how they are loaded. Change the structure instead of adding a guard for the single case.
 
-**Self-correcting.** Rules aren't always followed, so whoever finds a violation repairs it: within their task they fix it, otherwise they open an issue for its owner. The start and end of every project check the work against the doctrine.
+**Self-correcting.** Rules aren't always followed, so whoever finds a violation repairs it: within their task they fix it, otherwise they add it to the owner's open issue, or open one if none fits. The start and end of every project check the work against the doctrine.
 
 **Predictable behavior.** Work moves on events and states its outcome: a wait ends on a result, a refusal or a stop, never on elapsed time alone; what is unknown is reported as unknown; a default lives with its owner, and a deviation reports itself.
 

@@ -20,8 +20,8 @@ Each axis has one owner. Replacing a tool may need data migration and new instru
 Three repositories, each pinned by the next:
 
 1. [mattpocock/skills](https://github.com/mattpocock/skills), kept untouched in `upstream/` as a git subtree.
-2. **agent-harness** (this repository): the general harness.
-3. **An installation** (private): `INSTANCE.md` with its people, paths, repositories and models, the issue-tracker mapping in `docs/agents/`, and client settings. Start from `INSTANCE.example.md`.
+2. **agent-harness** (this repository): what Matt lacks, namely principles, knowledge, `engineering`, `frontend` and `writing` rules, four short addenda, the install.
+3. **An installation** (private): the mapping of Matt's skills onto its infrastructure in `docs/agents/` (tracker, labels, branches, merge requests), and `INSTANCE.md` with its people, paths, repositories and models. Start from `INSTANCE.example.md`.
 
 ## Layout
 
@@ -29,9 +29,9 @@ Three repositories, each pinned by the next:
 | --- | --- | --- |
 | Everything | `AGENTS.md`: principles and hard limits | always |
 | Code | `engineering/`: the `engineering` and `frontend` skills | by description |
-| One skill | `engineering/addenda/<skill>.md`, appended to the upstream skill of that name at install | with that skill |
+| One skill | `engineering/addenda/<skill>.md`, appended to the upstream skill of that name at install; only true additions (ADR 0008) | with that skill |
 | Knowledge | `knowledge/SCHEMA.md`, imported by each module's `CLAUDE.md`; `knowledge/module/` is the skeleton | in that module |
-| Baseline | `upstream/skills/engineering/` and `productivity/` | by description |
+| Baseline | `upstream/skills/engineering/` and `productivity/`, all installed | by description |
 
 ## Flow
 

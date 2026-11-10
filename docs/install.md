@@ -11,7 +11,7 @@ Everything is written under the workspace root, nothing into a home directory; a
 | `.claude/skills/`, `.agents/skills/` | links to the skills, for Claude Code and Codex |
 | `.claude/settings.json` | Claude Code hooks: `SessionStart` asks to reload the skills in use after compaction and resume (AGENTS and INSTANCE come back by themselves as memory files); `SubagentStart` has every subagent load its matching skills first. Other settings stay. |
 
-An entry file it didn't write, or one edited since, is moved aside as `*.pre-harness` (numbered when one exists); a skill or INSTANCE link it didn't make is left alone with a warning. `setup-matt-pocock-skills` isn't installed: the issue-tracker mapping lives once, in the installation.
+An entry file it didn't write, or one edited since, is moved aside as `*.pre-harness` (numbered when one exists); a skill or INSTANCE link it didn't make is left alone with a warning. `setup-matt-pocock-skills` is installed like the other upstream skills; run it to generate an installation's `docs/agents/`.
 
 An entry file the installer didn't write, or one edited since, is moved aside as `*.pre-harness`; a link it didn't make is left alone with a warning.
 

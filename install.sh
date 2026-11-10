@@ -31,8 +31,6 @@ cp -r "$src/AGENTS.md" "$src/hooks" "$src/bin" "$src/knowledge" "$dst.new/"
 for d in "$src"/upstream/skills/engineering/*/ "$src"/upstream/skills/productivity/*/ "$src"/engineering/*/ "$src"/knowledge/*/; do
   n=$(basename "$d")
   [ -f "$d/SKILL.md" ] || continue
-  # The tracker mapping lives in the installation repo (INSTANCE); no per-repo copies.
-  [ "$n" = setup-matt-pocock-skills ] && continue
   if [ -e "$dst.new/skills/$n" ]; then die "two skills named $n (second: $d)"; fi
   cp -r "$d" "$dst.new/skills/$n"
   a="$src/engineering/addenda/$n.md"

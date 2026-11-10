@@ -5,4 +5,3 @@
 - **Package:** run the same command on one subfolder to inspect its seams and locality. Import counts suggest where to read; judge depth from the module's interface and implementation.
 - **Neighbourhood:** add `--neighbourhood PATH` for a candidate's files within two imports in either direction; `--imports N` changes the distance. Use this DOT graph as the report's before diagram. External or unresolved imports are counted separately.
 - **Check:** run the script with `--self-check --scratch SCRATCH`. It installs Emerge in an isolated environment under SCRATCH and writes exports there. Source folders stay read-only.
-- **Delivery:** deliver the report where the operator can read it; INSTANCE names the channel. A local file and its path are not delivery. Remove scratch after delivering the report.

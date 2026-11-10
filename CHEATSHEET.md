@@ -11,6 +11,7 @@ What you type. Skills marked † only run when you call them; the others also lo
 | `/to-spec` † | Writes the conversation up as the project description |
 | `/to-tickets` † | Splits it into issues with blocking links; the last is "Update knowledge" |
 | `/triage` † | Sorts issues that arrive from outside this flow |
+| `/setup-matt-pocock-skills` † | Generates the installation's tracker, label and domain mapping (`docs/agents/`) |
 | `/to-questionnaire` † | Turns an open question into questions for someone else |
 
 ## Build

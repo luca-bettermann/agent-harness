@@ -30,3 +30,8 @@ Copy into the installation's repository as `INSTANCE.md` and pass its path to `i
 | T4 | `<model>` | 1 |
 
 - Cost cap per vendor: `<units>`; vendor order: `<vendors>`
+- Budget: start a subagent only while running subagents stay within the cap; builders run on the default build tier, a higher tier needs a reason on the issue.
+
+## Delivery
+
+- Where reports (architecture reports, project reports) are delivered so the operator can read them: `<channel>`. A local file and its path are not delivery.

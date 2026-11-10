@@ -1,6 +1,6 @@
 # AGENTS
 
-The only always-loaded harness file. The installation's `INSTANCE.md`, loaded with this file, names the operator, people, paths, repositories and tools, including the issue-tracker mapping that tracker skills read. Skills load by their descriptions. A knowledge module's own `CLAUDE.md` brings its schema. The task's scope and authorization govern what may change.
+The only always-loaded harness file. The installation's `INSTANCE.md`, loaded with this file, names the operator, people, paths, repositories and tools, including the issue-tracker mapping that tracker skills read. Before acting, and again after compaction or resume, load every skill whose description matches the task. A knowledge module's own `CLAUDE.md` brings its schema. The task's scope and authorization govern what may change.
 
 ## Principles
 
@@ -10,7 +10,7 @@ The only always-loaded harness file. The installation's `INSTANCE.md`, loaded wi
 
 **Least debt.** Every requirement traces to a real goal and its source, and "don't build it" is the first option. Choose the smallest clear design serving today's requirements. Fold into an existing owner before creating code, documents or process. Adopt mature tools for solved problems; own code only for domain behavior, physical safety and needs nothing else serves. Retire what a change displaces, once every consumer reaches a working replacement. Prefer structural constraints to bespoke enforcement.
 
-**Self-correcting.** Doctrine isn't always followed, so every agent repairs what it finds. A violation anywhere (code, branches, worktrees, tracker states, docs, settings) is fixed when it lies within the agent's task; otherwise it becomes an issue for its owner. It is never ignored. Checkpoints look actively: the start and end of every project check its repositories and tracker against the doctrine.
+**Self-correcting.** Doctrine isn't always followed, so every agent repairs what it finds. A violation anywhere (code, branches, worktrees, tracker states, docs, settings) is fixed in the same change when it lies in what the task already touches and doesn't materially grow it; otherwise it becomes a Backlog issue for its owner, linked to where it was found. It is never ignored. Checkpoints look actively: the start and end of every project check its repositories and tracker against the doctrine.
 
 **Predictable behavior.** Work is event-driven: a wait ends on a result, a refusal, an owner failure or a stop, never on elapsed time or a retry count alone. Cancellation preserves uncertain effects and doesn't authorize a replay. Defaults live at their owner, a taken alternative reports itself, and unknown stays unknown.
 

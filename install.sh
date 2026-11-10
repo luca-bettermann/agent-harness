@@ -13,11 +13,11 @@ root=$(cd "$1" && pwd)
 case $HOME/ in "${root%/}"/*) die "$root contains $HOME: install into a workspace root, never account-wide";; esac
 dst=$root/.agent-harness
 f=$root/.claude/settings.json
-trap 'rm -rf "$dst.new" "$f.tmp"' EXIT
+trap 'rm -rf "$dst.new" "$f.tmp" "$root/.codex/hooks.json.tmp"' EXIT
 
 # Check everything before writing anything.
 command -v jq >/dev/null || die "needs jq"
-[ ! -e "$f" ] || jq empty "$f" 2>/dev/null || die "$f is not valid JSON"
+for x in "$f" "$root/.codex/hooks.json"; do [ ! -e "$x" ] || jq empty "$x" 2>/dev/null || die "$x is not valid JSON"; done
 inst=${2:-$(readlink "$dst/INSTANCE.md" 2>/dev/null || true)}
 if [ -n "$inst" ]; then
   [ -f "$inst" ] || die "no INSTANCE file at $inst"
@@ -27,7 +27,7 @@ fi
 # Build: AGENTS, hooks, launcher, knowledge, and the skills with their addenda appended.
 rm -rf "$dst.new"
 mkdir -p "$dst.new/skills"
-cp -r "$src/AGENTS.md" "$src/hooks" "$src/bin" "$src/knowledge" "$src/engineering/agents" "$dst.new/"
+cp -r "$src/AGENTS.md" "$src/hooks" "$src/bin" "$src/knowledge" "$dst.new/"
 for d in "$src"/upstream/skills/engineering/*/ "$src"/upstream/skills/productivity/*/ "$src"/engineering/*/ "$src"/knowledge/*/; do
   n=$(basename "$d")
   [ -f "$d/SKILL.md" ] || continue
@@ -36,6 +36,15 @@ for d in "$src"/upstream/skills/engineering/*/ "$src"/upstream/skills/productivi
   a="$src/engineering/addenda/$n.md"
   if [ -f "$a" ]; then printf '\n' >> "$dst.new/skills/$n/SKILL.md"; cat "$a" >> "$dst.new/skills/$n/SKILL.md"; fi
 done
+# The installation's docs/agents/*.md with skill frontmatter are skills too, linked so each stays one file.
+if [ -n "$inst" ]; then
+  for m in "$(dirname "$inst")"/docs/agents/*.md; do
+    [ "$(head -n 1 "$m" 2>/dev/null)" = --- ] || continue
+    n=$(basename "$m" .md)
+    if [ -e "$dst.new/skills/$n" ]; then die "two skills named $n (second: $m)"; fi
+    mkdir "$dst.new/skills/$n" && ln -s "$m" "$dst.new/skills/$n/SKILL.md"
+  done
+fi
 for a in "$src"/engineering/addenda/*.md; do
   [ -d "$dst.new/skills/$(basename "$a" .md)" ] || echo "warning: addendum without skill: $a" >&2
 done
@@ -62,9 +71,6 @@ for s in "$dst"/skills/*/; do
 done
 # Claude Code reads CLAUDE.local.md in every directory above the session, nested repositories included.
 [ -n "$inst" ] && link "$dst/INSTANCE.md" "$root/CLAUDE.local.md"
-# Agent types (Claude Code): the builder.
-mkdir -p "$root/.claude/agents"
-for a in "$dst"/agents/*.md; do link "$a" "$root/.claude/agents/$(basename "$a")"; done
 for l in "$root"/.claude/skills/* "$root"/.agents/skills/* "$root/.claude/agents/"* "$root/CLAUDE.local.md"; do
   if ours "$l" && [ ! -e "$l" ]; then rm "$l"; fi
 done
@@ -86,18 +92,16 @@ entry() { # entry <name> <path>, content on stdin
 { echo "$mark"; cat "$dst/AGENTS.md"; } | entry claude "$root/CLAUDE.md"
 { echo "$mark"; cat "$dst/AGENTS.md"; [ -n "$inst" ] && printf '\nRead %s in full before any work: it binds this harness to this installation.\n' "$inst"; } | entry codex "$root/AGENTS.md"
 
-# Claude Code hooks, in the workspace's project settings: ask to reload the skills in use after compaction
-# and resume; every subagent loads its matching skills first; the point-of-use rules (mapping read-gate,
-# builder prompt, merge checklist). Each is replaced by its command, so reruns don't duplicate.
-[ -s "$f" ] || echo '{}' > "$f"
-r=\"$dst/hooks/reload.sh\"
-s=\"$dst/hooks/subagent-start.sh\"
-h() { printf '"%s"' "$dst/hooks/$1"; }
-jq --arg r "$r" --arg s "$s" --arg g "$(h mapping-gate.sh)" --arg b "$(h builder-prompt.sh)" --arg m "$(h merge-checklist.sh)" '
-  def put($ev; $cmd; $matcher): .hooks[$ev] = ([.hooks[$ev][]? | select(.hooks[0].command != $cmd)] + [({matcher: $matcher} | with_entries(select(.value != null))) + {hooks: [{type: "command", command: $cmd}]}]);
-  put("SessionStart"; $r; "compact|resume") | put("SubagentStart"; $s; null)
-  | put("PreToolUse"; $g; ".*") | put("PostToolUse"; $g; "Read") | put("SessionStart"; $g; "compact|resume") | put("SessionEnd"; $g; null)
-  | put("PreToolUse"; $b; "Agent") | put("PostToolUse"; $m; "Bash")' "$f" > "$f.tmp"
-cat "$f.tmp" > "$f"
-rm -f "$f.tmp"
+# Hooks, in the workspace's project settings of both clients (same format): the skill-loading rule on every prompt,
+# subagent start, and session start after compaction or resume. Earlier entries pointing into $dst/hooks are
+# dropped first, so reruns don't duplicate and retired hooks go. Codex runs project hooks only once the account
+# trusts the workspace and has reviewed them (`/hooks`).
+for x in "$f" "$root/.codex/hooks.json"; do
+  mkdir -p "$(dirname "$x")"; [ -s "$x" ] || echo '{}' > "$x"
+  jq --arg d "\"$dst/hooks/" --arg s "\"$dst/hooks/load-skills.sh\"" '
+    def put($ev; $matcher): .hooks[$ev] += [({matcher: $matcher} | with_entries(select(.value != null))) + {hooks: [{type: "command", command: $s}]}];
+    .hooks //= {} | .hooks |= (map_values(map(select(all(.hooks[]?; .command // "" | startswith($d) | not)))) | with_entries(select(.value != [])))
+    | put("UserPromptSubmit"; null) | put("SubagentStart"; null) | put("SessionStart"; "compact|resume")' "$x" > "$x.tmp"
+  cat "$x.tmp" > "$x"; rm -f "$x.tmp"
+done
 echo "installed into $root; below it, start agents with $dst/bin/claude or $dst/bin/codex"

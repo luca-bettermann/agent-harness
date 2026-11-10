@@ -1,3 +1,3 @@
-# An issue is one agent's work package; a project ends with "Update knowledge"
+# An issue is one agent's work package
 
-Every agent pays a fixed cost (orientation of 100–300k tokens, a worktree, a CI round, a review), and narrow agents in the same area conflict on one branch. So an issue bundles related work of about half a day, with related rulings as a checklist, and is split only for separate repositories, blocking or clear parallel gain; the installation's tracker mapping holds the detail. Each project's last issue, "Update knowledge", runs with the operator, so knowledge upkeep is part of finishing a project rather than a separate check.
+Every agent pays a fixed cost (orientation of 100–300k tokens, a worktree, a CI round, a review), and narrow agents in the same area conflict on one branch. So an issue bundles related work of about half a day; the installation's tracker mapping holds the rule.

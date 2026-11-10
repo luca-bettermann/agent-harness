@@ -1,21 +1,21 @@
 # agent-harness
 
-A harness for coding and research agents (Claude Code, Codex): shared principles, workflow skills and a knowledge schema, installed into one workspace. Built on [Matt Pocock's skills](https://github.com/mattpocock/skills).
+A harness for coding and research agents (Claude Code, Codex): shared principles, workflow skills and a knowledge schema, installed into one workspace. Built on [Matt Pocock's skills](https://github.com/mattpocock/skills), kept unchanged in `upstream/`; our short additions to them live in [`engineering/addenda/`](engineering/addenda/). An installation maps the skills onto its infrastructure in its own `docs/agents/` and names its people, paths and tools in its `INSTANCE.md`.
 
-Three layers, each with one job:
-
-1. **Matt's skills, unchanged** in `upstream/`, all of them, including `setup-matt-pocock-skills`. Four short addenda add what he lacks: the builder report and its check, the knowledge issue, gates as a review check, and `emerge-map`.
-2. **This harness adds** principles and hard limits (`AGENTS.md`), the knowledge module, the `engineering`, `frontend` and `writing` rules, and the install.
-3. **An installation maps Matt's skills onto its infrastructure** in `docs/agents/` (tracker, labels, branches, merge requests, where findings go). Its `INSTANCE.md` holds facts about the installation: people, paths, tools, models.
-
-- [Concept](docs/concept.md): axes, layers, layout and flow
-- [Cheat sheet](CHEATSHEET.md): the commands you use day to day
-- [Install details](docs/install.md): what the installer writes, the launcher, removing an old install
+- [Concept](docs/concept.md): axes and flow
+- [Install details](docs/install.md): what the installer writes and why the launcher
 - [Decisions](docs/adr/): why the harness works the way it does
+
+## Flow
+
+1. Explore in the conversation (`/wayfinder`, `/grill-me`, `/research`); nothing goes to the tracker yet.
+2. `/to-spec`, then `/to-tickets`: the project and its issues.
+3. `/implement-spec`: one subagent per unblocked issue, one review of the project branch.
+4. "Update knowledge": the project's last issue, run with the operator.
 
 ## Hooks
 
-Claude Code hooks enforce three rules at the point of use: a tracker tool call (pattern and mapping file from the installation's INSTANCE) is refused until the mapping file has been read, separately for the session and each subagent and again after compaction; a `builder` subagent's prompt must be exactly `Implement <ISSUE-ID>.`; after a merge into `project/*` or a `merge_requests/<iid>/merge` call, the mapping's tracker checklist is injected. Each script runs a self-check with `--check`. Codex has no such hooks and gets the same rules as text only.
+One hook, the same for Claude Code and Codex: on every prompt, at every subagent start, and after compaction or resume, the agent is told AGENTS' skill-loading rule (`sh hooks/load-skills.sh --check`). Codex runs it once the account trusts the workspace and has reviewed the hook (`/hooks`).
 
 ## Requirements
 
@@ -28,13 +28,6 @@ An agent CLI ([Claude Code](https://claude.com/claude-code) or [Codex](https://g
 ```
 
 Then start agents below the workspace with `/path/to/workspace/.agent-harness/bin/claude` or `.../bin/codex`. Rerun the install after updating this checkout.
-
-## Start your own installation
-
-1. Create a private repository for your installation.
-2. Copy `INSTANCE.example.md` into it as `INSTANCE.md` and fill it in.
-3. Run the install, then `/setup-matt-pocock-skills` to generate `docs/agents/`.
-4. For each knowledge module, copy `knowledge/module/` and fill in its `CLAUDE.md`.
 
 ## Update upstream
 

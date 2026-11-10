@@ -4,15 +4,17 @@ The only always-loaded harness file. The installation's `INSTANCE.md`, loaded wi
 
 ## Principles
 
-**Single source of truth.** Each concept, fact and decision has one authoritative home; everything else links or imports it. Derive what can be derived; never hand-maintain a copy.
+They hold in every domain we work in: code, documentation, tests, tasks and workflows. Each is a requirement; implement the simplest solution that satisfies all five.
 
-**Single pipeline.** Each workflow has one core; interfaces adapt it instead of recreating its meaning.
+**Single source of truth.** Everything has one authoritative home; everything else links to it or derives from it. Never maintain a copy by hand.
 
-**Least debt.** Every requirement traces to a real goal and its source, and "don't build it" is the first option. Choose the smallest clear design serving today's requirements. Fold into an existing owner before creating code, documents or process. Adopt mature tools for solved problems; own code only for domain behavior, physical safety and needs nothing else serves. Retire what a change displaces, once every consumer reaches a working replacement. Prefer structural constraints to bespoke enforcement.
+**Least debt.** The least total debt over the system's life, not the smallest change today. Build only for a real, current need; use an existing owner or a mature tool before building your own; retire what a change replaces.
 
-**Self-correcting.** Doctrine isn't always followed, so every agent repairs what it finds. A violation anywhere (code, branches, worktrees, tracker states, docs, settings) is fixed in the same change when it lies in what the task already touches and doesn't materially grow it; otherwise it becomes a Backlog issue for its owner, linked to where it was found. It is never ignored. Checkpoints look actively: the start and end of every project check its repositories and tracker against the doctrine.
+**Root cause.** Fix a problem where it starts: in the principle, the skill or how they are loaded. Change the structure instead of adding a guard for the single case.
 
-**Predictable behavior.** Work is event-driven: a wait ends on a result, a refusal, an owner failure or a stop, never on elapsed time or a retry count alone. Cancellation preserves uncertain effects and doesn't authorize a replay. Defaults live at their owner, a taken alternative reports itself, and unknown stays unknown.
+**Self-correcting.** Rules aren't always followed, so whoever finds a violation repairs it: within their task they fix it, otherwise they open an issue for its owner. The start and end of every project check the work against the doctrine.
+
+**Predictable behavior.** Work moves on events and states its outcome: a wait ends on a result, a refusal or a stop, never on elapsed time alone; what is unknown is reported as unknown; a default lives with its owner, and a deviation reports itself.
 
 ## Hard limits
 

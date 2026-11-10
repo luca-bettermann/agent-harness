@@ -27,7 +27,7 @@ fi
 # Build: AGENTS, hooks, launcher, knowledge, and the skills with their addenda appended.
 rm -rf "$dst.new"
 mkdir -p "$dst.new/skills"
-cp -r "$src/AGENTS.md" "$src/hooks" "$src/bin" "$src/knowledge" "$dst.new/"
+cp -r "$src/AGENTS.md" "$src/hooks" "$src/bin" "$src/knowledge" "$src/engineering/agents" "$dst.new/"
 for d in "$src"/upstream/skills/engineering/*/ "$src"/upstream/skills/productivity/*/ "$src"/engineering/*/ "$src"/knowledge/*/; do
   n=$(basename "$d")
   [ -f "$d/SKILL.md" ] || continue
@@ -62,7 +62,10 @@ for s in "$dst"/skills/*/; do
 done
 # Claude Code reads CLAUDE.local.md in every directory above the session, nested repositories included.
 [ -n "$inst" ] && link "$dst/INSTANCE.md" "$root/CLAUDE.local.md"
-for l in "$root"/.claude/skills/* "$root"/.agents/skills/* "$root/CLAUDE.local.md"; do
+# Agent types (Claude Code): the builder.
+mkdir -p "$root/.claude/agents"
+for a in "$dst"/agents/*.md; do link "$a" "$root/.claude/agents/$(basename "$a")"; done
+for l in "$root"/.claude/skills/* "$root"/.agents/skills/* "$root/.claude/agents/"* "$root/CLAUDE.local.md"; do
   if ours "$l" && [ ! -e "$l" ]; then rm "$l"; fi
 done
 
@@ -84,13 +87,17 @@ entry() { # entry <name> <path>, content on stdin
 { echo "$mark"; cat "$dst/AGENTS.md"; [ -n "$inst" ] && printf '\nRead %s in full before any work: it binds this harness to this installation.\n' "$inst"; } | entry codex "$root/AGENTS.md"
 
 # Claude Code hooks, in the workspace's project settings: ask to reload the skills in use after compaction
-# and resume; every subagent loads its matching skills first.
+# and resume; every subagent loads its matching skills first; the point-of-use rules (mapping read-gate,
+# builder prompt, merge checklist). Each is replaced by its command, so reruns don't duplicate.
 [ -s "$f" ] || echo '{}' > "$f"
 r=\"$dst/hooks/reload.sh\"
 s=\"$dst/hooks/subagent-start.sh\"
-jq --arg r "$r" --arg s "$s" '
-  .hooks.SessionStart = ([.hooks.SessionStart[]? | select(.hooks[0].command != $r)] + [{matcher: "compact|resume", hooks: [{type: "command", command: $r}]}])
-  | .hooks.SubagentStart = ([.hooks.SubagentStart[]? | select(.hooks[0].command != $s)] + [{hooks: [{type: "command", command: $s}]}])' "$f" > "$f.tmp"
+h() { printf '"%s"' "$dst/hooks/$1"; }
+jq --arg r "$r" --arg s "$s" --arg g "$(h mapping-gate.sh)" --arg b "$(h builder-prompt.sh)" --arg m "$(h merge-checklist.sh)" '
+  def put($ev; $cmd; $matcher): .hooks[$ev] = ([.hooks[$ev][]? | select(.hooks[0].command != $cmd)] + [({matcher: $matcher} | with_entries(select(.value != null))) + {hooks: [{type: "command", command: $cmd}]}]);
+  put("SessionStart"; $r; "compact|resume") | put("SubagentStart"; $s; null)
+  | put("PreToolUse"; $g; "mcp__.*") | put("SessionEnd"; $g; null)
+  | put("PreToolUse"; $b; "Agent") | put("PostToolUse"; $m; "Bash")' "$f" > "$f.tmp"
 cat "$f.tmp" > "$f"
 rm -f "$f.tmp"
 echo "installed into $root; below it, start agents with $dst/bin/claude or $dst/bin/codex"

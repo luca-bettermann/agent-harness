@@ -13,6 +13,10 @@ Three layers, each with one job:
 - [Install details](docs/install.md): what the installer writes, the launcher, removing an old install
 - [Decisions](docs/adr/): why the harness works the way it does
 
+## Hooks
+
+Claude Code hooks enforce three rules at the point of use: the first call per session to a tracker tool (pattern and mapping file from the installation's INSTANCE) is refused until the mapping is read; a `builder` subagent's prompt must be exactly `Implement <ISSUE-ID>.`; after a merge into `project/*` or a `merge_requests/<iid>/merge` call, the mapping's tracker checklist is injected. Each script runs a self-check with `--check`. Codex has no such hooks and gets the same rules as text only.
+
 ## Requirements
 
 An agent CLI ([Claude Code](https://claude.com/claude-code) or [Codex](https://github.com/openai/codex)), `git`, `jq`, a POSIX shell, and a folder of Markdown files. The installation chooses the rest: issue tracker, Git host with CI, Obsidian for reading knowledge modules, [vcs2l](https://github.com/ros-infrastructure/vcs2l) for many repositories.

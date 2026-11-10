@@ -96,7 +96,7 @@ h() { printf '"%s"' "$dst/hooks/$1"; }
 jq --arg r "$r" --arg s "$s" --arg g "$(h mapping-gate.sh)" --arg b "$(h builder-prompt.sh)" --arg m "$(h merge-checklist.sh)" '
   def put($ev; $cmd; $matcher): .hooks[$ev] = ([.hooks[$ev][]? | select(.hooks[0].command != $cmd)] + [({matcher: $matcher} | with_entries(select(.value != null))) + {hooks: [{type: "command", command: $cmd}]}]);
   put("SessionStart"; $r; "compact|resume") | put("SubagentStart"; $s; null)
-  | put("PreToolUse"; $g; "mcp__.*") | put("SessionEnd"; $g; null)
+  | put("PreToolUse"; $g; "mcp__.*") | put("PostToolUse"; $g; "Read") | put("SessionEnd"; $g; null)
   | put("PreToolUse"; $b; "Agent") | put("PostToolUse"; $m; "Bash")' "$f" > "$f.tmp"
 cat "$f.tmp" > "$f"
 rm -f "$f.tmp"

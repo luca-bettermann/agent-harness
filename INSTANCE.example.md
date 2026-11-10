@@ -35,3 +35,7 @@ Copy into the installation's repository as `INSTANCE.md` and pass its path to `i
 ## Delivery
 
 - Where reports (architecture reports, project reports) are delivered so the operator can read them: `<channel>`. A local file and its path are not delivery.
+
+## Harness hook configuration
+
+- Mapping read-gate: tracker tool pattern `<shell glob of the tracker's write tools, e.g. mcp__linear__save_*>` (the hook refuses them until the mapping file is read); mapping file `<absolute path to docs/agents/issue-tracker.md>`. Its section `## Tracker checklist ...` is shown after every merge into a project branch.

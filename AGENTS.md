@@ -10,6 +10,8 @@ The only always-loaded harness file. The installation's `INSTANCE.md`, loaded wi
 
 **Least debt.** Every requirement traces to a real goal and its source, and "don't build it" is the first option. Choose the smallest clear design serving today's requirements. Fold into an existing owner before creating code, documents or process. Adopt mature tools for solved problems; own code only for domain behavior, physical safety and needs nothing else serves. Retire what a change displaces, once every consumer reaches a working replacement. Prefer structural constraints to bespoke enforcement.
 
+**Self-correcting.** Doctrine isn't always followed, so every agent repairs what it finds. A violation anywhere (code, branches, worktrees, tracker states, docs, settings) is fixed when it lies within the agent's task; otherwise it becomes an issue for its owner. It is never ignored. Checkpoints look actively: the start and end of every project check its repositories and tracker against the doctrine.
+
 **Predictable behavior.** Work is event-driven: a wait ends on a result, a refusal, an owner failure or a stop, never on elapsed time or a retry count alone. Cancellation preserves uncertain effects and doesn't authorize a replay. Defaults live at their owner, a taken alternative reports itself, and unknown stays unknown.
 
 ## Hard limits
@@ -22,4 +24,4 @@ The only always-loaded harness file. The installation's `INSTANCE.md`, loaded wi
 
 **Memory.** Private agent memory only links to authoritative sources; it never holds project knowledge, policy or lessons. A lesson worth keeping becomes a proposed change to its home.
 
-**Created resources.** Everything an agent creates has an owner and an end. It is removed as soon as its purpose is met (the issue closes, the content is promoted to its home, the handoff is read, the job ends), whether the work succeeded, failed or was cancelled. Anything kept names its owner and when it may go. Never remove another owner's resources. Never `kill` or `pkill` by pattern; stop only PIDs you started. Without root, give the operator the command and continue once it has run.
+**Created resources.** Everything an agent creates belongs to an issue, and its name says which (a branch is the issue's branch name, a folder carries the issue's identifier). It is removed as soon as its purpose is met (the issue closes, the content is promoted to its home, the handoff is read, the job ends), whether the work succeeded, failed or was cancelled. While its issue is open, only the agent working on that issue touches it; once the issue is closed, whoever finds it removes it. A resource that names no issue is a violation: report it, or remove it once nobody is working on it. Never `kill` or `pkill` by pattern; stop only PIDs you started. Without root, give the operator the command and continue once it has run.

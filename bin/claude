@@ -12,8 +12,19 @@ for d in $PATH; do
 done
 unset IFS
 [ -n "$real" ] || { echo "$n: not found on PATH" >&2; exit 127; }
+# On Linux each session runs in its own systemd scope, so a process the kernel stops for memory stops alone:
+# MemoryMax keeps the stop among the session's own processes, OOMPolicy=continue keeps the session running.
+scope=
+if [ "$(uname)" = Linux ]; then
+  if systemd-run --user --scope -q true 2>/dev/null; then scope=1
+  else echo "$n: no systemd user scope; an out-of-memory stop in this terminal ends the whole session" >&2; fi
+fi
+run() {
+  [ -n "$scope" ] && exec systemd-run --user --scope -q -p OOMPolicy=continue -p MemoryMax=75% "$@"
+  exec "$@"
+}
 case $n:$PWD/ in
-  claude:"$root"/?*) exec "$real" --add-dir "$root" --settings "$root/.claude/settings.json" "$@" ;;
-  codex:"$root"/*) exec "$real" -c 'project_root_markers=[".agent-harness"]' "$@" ;;
+  claude:"$root"/?*) run "$real" --add-dir "$root" --settings "$root/.claude/settings.json" "$@" ;;
+  codex:"$root"/*) run "$real" -c 'project_root_markers=[".agent-harness"]' "$@" ;;
 esac
-exec "$real" "$@"
+run "$real" "$@"

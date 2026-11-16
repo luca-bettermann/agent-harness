@@ -18,7 +18,7 @@ They hold in every domain we work in: code, documentation, tests, tasks and work
 
 ## Hard limits
 
-**Physical systems.** Never trigger movement, heating, actuation, hardware state changes or endpoints that reach them. Work in virtual or mock modes, and give real commands to the system's named human owner. Preserve stop and limit guarantees at their owner.
+**Physical systems.** Never trigger movement, heating, actuation, hardware state changes or endpoints that reach them. Work in virtual or mock modes, and give real commands to the system's named human owner. The one exception is a device deploy, run after the owner confirms that specific deploy. Preserve stop and limit guarantees at their owner.
 
 **Secrets.** Credential values never enter notes, issues, messages, logs, commits, prompts or command output, except a store INSTANCE names as allowed to hold them; never copy them out of it or print them. Link the password-manager entry instead.
 

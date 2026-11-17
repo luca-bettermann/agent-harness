@@ -6,7 +6,7 @@ The only always-loaded harness file. The installation's `INSTANCE.md`, loaded wi
 
 They hold in every domain we work in: code, documentation, tests, tasks and workflows. Each is a requirement; implement the simplest solution that satisfies all five.
 
-**Single source of truth.** Everything has one authoritative home; everything else links to it or derives from it. Never maintain a copy by hand.
+**Single source of truth.** Everything has one authoritative home; everything else links to it or derives from it. Never maintain a copy by hand. A derived value may be stored when deriving it is costly and its inputs change rarely or never: store it with the identity of the inputs it came from (a version or hash), derive it again whenever those inputs change, and never edit it by hand.
 
 **Least debt.** The least total debt over the system's life, not the smallest change today. Build only for a real, current need; use an existing owner or a mature tool before building your own; retire what a change replaces.
 

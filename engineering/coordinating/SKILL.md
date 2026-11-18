@@ -1,0 +1,32 @@
+---
+name: coordinating
+description: Rules for a coordinator running other agents, attended or autonomous. Use when dispatching builders or reviewers, keeping them moving, or running a project in autonomous mode.
+---
+
+A coordinator keeps every dispatched agent moving and owns each wait it hands out. INSTANCE names the caps, the models and the installation's standing rulings for autonomous mode.
+
+## Autonomous mode
+
+The operator switches it on and off. While it is on:
+
+- **Only hard limits wait.** A question to the operator is posted on its issue with a recommendation; the work continues on that recommendation, recorded as a deviation with its reason. Work waits for the operator only at the AGENTS hard limits, a release, spend above the caps, or scope outside the project.
+- **Keep the caps full.** After each completion, start every issue whose blockers are Done, across repositories in parallel, up to the caps.
+- **Unattended commands.** An approval prompt waits until a human wakes. Agents keep each command to one purpose, keep credentials in the environment (git through its credential helper), and delete by exact path inside their own issue's folders. Every dispatched brief carries this rule.
+
+## Watchdog
+
+The coordinator always has a background watch running that wakes it on the first of:
+
+- an agent or run finishing;
+- an agent silent for 20 minutes (no new transcript entry);
+- a resource limit near (disk, issue-tracker quota).
+
+On waking it handles the event and re-arms the watch before it ends its turn. A coordinator with agents running and no watch armed is a stall.
+
+## Waits
+
+Each agent waits in the foreground until the result: a poll loop under the tool's time limit, repeated until the final state. Its turn ends only with its report. A wait that must outlast the agent is handed to the coordinator, which watches it.
+
+## Stalls
+
+A silent agent is read, not guessed at. Blocked on an approval prompt: stop it and resume it with a command that needs none. Waiting on a finished event: resume it with the result. Every stall longer than 30 minutes is a deviation: the next status report names it, its cause, its length and the fix.

@@ -12,6 +12,7 @@ The operator switches it on and off. While it is on:
 - **Decide from the plan and doctrine.** An open choice is decided from the implementation plan, the doctrine and the operator's rulings, and recorded on its issue as a deviation with its reason. The operator reviews these decisions when back; until then they stand.
 - **Only true ambiguity stays open.** A question the plan and doctrine cannot settle is posted on its issue with a recommendation, and only the work that depends on its answer waits. Work also waits at the AGENTS hard limits, a release, spend above the caps, or scope outside the project. All other work continues.
 - **Review on return.** When the operator is back, the first report lists every decision taken since the last one and every question still open, each with its issue.
+- **Issues at session size.** A planner's brief cites the `issue-tracker` sizing: a plan row is not an issue; rows smaller than a few hours become checklist lines of the issue they fit.
 - **Keep the caps full.** After each completion, start every issue whose blockers are Done, across repositories in parallel, up to the caps.
 - **Unattended commands.** An approval prompt waits until a human wakes. Agents keep each command to one purpose, keep credentials in the environment (git through its credential helper), and delete by exact path inside their own issue's folders. Every dispatched brief carries this rule.
 

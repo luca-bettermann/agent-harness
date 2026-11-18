@@ -17,6 +17,14 @@ The operator switches it on and off. While it is on:
 - **Keep the caps full.** After each completion, start every issue whose blockers are Done, across repositories in parallel, up to the caps.
 - **Unattended commands.** An approval prompt waits until a human wakes. Agents keep each command to one purpose, keep credentials in the environment (git through its credential helper), and delete by exact path inside their own issue's folders. Every dispatched brief carries this rule.
 
+## Operator words
+
+Whether attended or autonomous, an operator ruling or comment is kept exactly as written and is never lost:
+
+- **Verbatim log.** The coordinator quotes each ruling and comment word for word in the project's decision log, with its time and where it was made (chat, page card, issue). Its own reading or suggestion goes on a separate line headed "proposal:". A summary, a standards file or a brief cites the quote. It never restates a proposal as a ruling.
+- **Acceptance rows.** Each comment becomes one row on the issue that does the work: the quote, the change, and the evidence (a screenshot of the exact element, a test, a diff line). A builder's brief lists every open row. Its report closes each row with evidence or states why it is still open.
+- **Evidence before showing.** The coordinator checks every row against its evidence before it calls work done or shows a new version to the operator. A row without evidence goes back to the builder. A new version opens with its rows: closed with evidence, or still open.
+
 ## Watchdog
 
 The coordinator always has a background watch running that wakes it on the first of:

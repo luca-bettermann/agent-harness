@@ -10,6 +10,7 @@ A coordinator keeps every dispatched agent moving and owns each wait it hands ou
 The operator switches it on and off. While it is on:
 
 - **Decide from the plan and doctrine.** An open choice is decided from the implementation plan, the doctrine and the operator's rulings, and recorded on its issue as a deviation with its reason. The operator reviews these decisions when back; until then they stand.
+- **The architecture is the operator's.** A change to the architecture itself (a store or what it holds, a service, a contract between repositories, a module boundary, a data flow, a gate, a retention or safety guarantee) is never an autonomous decision, however reversible it looks: it goes to the operator as a question and stops the work that depends on it. A coordinator relays such a deviation found in a builder's report as a question, never as a decision taken.
 - **Only true ambiguity stays open.** A question the plan and doctrine cannot settle is posted on its issue with a recommendation, and only the work that depends on its answer waits. Work also waits at the AGENTS hard limits, a release, spend above the caps, or scope outside the project. All other work continues.
 - **Review on return.** When the operator is back, the first report lists every decision taken since the last one and every question still open, each with its issue.
 - **Issues at session size.** A planner's brief cites the `issue-tracker` sizing: a plan row is not an issue; rows smaller than a few hours become checklist lines of the issue they fit.

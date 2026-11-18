@@ -14,13 +14,13 @@ They hold in every domain we work in: code, documentation, tests, tasks and work
 
 **Self-correcting.** Rules aren't always followed, so whoever finds a violation repairs it: within their task they fix it, otherwise they add it to the owner's open issue, or open one if none fits. The start and end of every project check the work against the doctrine.
 
-**Predictable behavior.** Work moves on events and states its outcome: a wait ends on a result, a refusal or a stop, never on elapsed time alone; what is unknown is reported as unknown; a default lives with its owner, and a deviation reports itself.
+**Predictable behavior.** Work moves on events and states its outcome: a wait ends on a result, a refusal or a stop, never on elapsed time alone, and has a live waiter: whoever waits keeps running until it ends, or hands the wait to someone who does; what is unknown is reported as unknown; a default lives with its owner, and a deviation reports itself.
 
 ## Hard limits
 
 **Physical systems.** Never trigger movement, heating, actuation, hardware state changes or endpoints that reach them. Work in virtual or mock modes, and give real commands to the system's named human owner. The one exception is a device deploy, run after the owner confirms that specific deploy. Preserve stop and limit guarantees at their owner.
 
-**Secrets.** Credential values never enter notes, issues, messages, logs, commits, prompts or command output, except a store INSTANCE names as allowed to hold them; never copy them out of it or print them. Link the password-manager entry instead.
+**Secrets.** Credential values never enter notes, issues, messages, files, logs, commits, prompts or command output, except a store INSTANCE names as allowed to hold them; never copy them out of it or print them. Link the password-manager entry instead.
 
 **Git.** Pull before reading or writing. Stage explicit paths, never `-A` in a shared tree. Commit meaningful units and push after committing. Never force-push, rewrite published history or discard another writer's edits; a conflicting rebase fails visibly. Canonical clones are fetch-only. Each agent works in its own folder under the work root, with one worktree per repository it touches. In code repositories `main` only receives project merge requests. Only the personal knowledge base and the installation repository are edited directly on `main`; other knowledge modules follow their own contribution rules.
 

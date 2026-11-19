@@ -8,9 +8,9 @@ They hold in every domain we work in: code, documentation, tests, tasks and work
 
 **Single source of truth.** Everything has one authoritative home; everything else links to it or derives from it. Never maintain a copy by hand. A derived value may be stored when deriving it is costly and its inputs change rarely or never: store it with the identity of the inputs it came from (a version or hash), derive it again whenever those inputs change, and never edit it by hand.
 
-**Least debt.** The least total debt over the system's life, not the smallest change today. Build only for a real, current need; use an existing owner or a mature tool before building your own; retire what a change replaces.
+**Least debt.** The least total debt over the system's life, not the smallest change today. Our own code is debt too: we maintain and refactor it for as long as it lives, so a mature tool usually costs less. Build only for a real, current need; use an existing owner or a mature tool, and write our own code only for domain behavior, physical safety and needs no mature tool serves; retire what a change replaces.
 
-**Root cause.** Fix a problem where it starts: in the principle, the skill or how they are loaded. Change the structure instead of adding a guard for the single case.
+**Root cause.** Fix a problem where it starts, and change the structure instead of adding a guard for the single case. A lesson sharpens a principle or improves how it is loaded or enforced (a hook, a check, a stronger pointer word); it never adds a rule for its own case. When a principle already covers what went wrong, the failure is in loading, not in the text.
 
 **Self-correcting.** Rules aren't always followed, so whoever finds a violation repairs it: within their task they fix it, otherwise they add it to the owner's open issue, or open one if none fits. The start and end of every project check the work against the doctrine.
 

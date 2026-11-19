@@ -18,7 +18,7 @@ The operator switches it on and off. While it is on, engineering's _Stop only fo
 
 Attended or autonomous, an operator ruling or comment is a source (AGENTS, Single source of truth):
 
-- **Verbatim log.** The coordinator quotes it word for word in the project's decision log, with its time and where it was made (chat, page card, issue); summaries, standards and briefs cite the quote. Its own reading or suggestion is a separate line headed "proposal:", never a ruling.
+- **Verbatim log.** The coordinator quotes it word for word in the project's decision log, with its time and where it was made (chat, page card, issue); summaries, standards and briefs cite the quote. Its own reading or suggestion is a separate line headed "proposal:", never a ruling. The log is the one home of rulings: before any question to the operator, the coordinator searches it, and an answer already there is applied, never asked again.
 - **Acceptance rows.** Each comment is an acceptance criterion on the issue that does the work: the quote, the change and its evidence (a screenshot of the exact element, a test, a diff line). A brief lists the open rows; a report closes each with evidence or says why it is still open. The coordinator checks every row against its evidence before it calls work done or shows a new version; a row without evidence goes back to the builder. A new version opens with its rows: closed with evidence, or open with the reason.
 
 ## Watch

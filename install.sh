@@ -93,16 +93,22 @@ entry() { # entry <name> <path>, content on stdin
 { echo "$mark"; cat "$dst/AGENTS.md"; } | entry claude "$root/CLAUDE.md"
 { echo "$mark"; cat "$dst/AGENTS.md"; [ -n "$inst" ] && printf '\nRead %s in full before any work: it binds this harness to this installation.\n' "$inst"; } | entry codex "$root/AGENTS.md"
 
-# Hooks, in the workspace's project settings of both clients (same format): the skill-loading rule on every prompt,
-# subagent start, and session start after compaction or resume. Earlier entries pointing into $dst/hooks are
-# dropped first, so reruns don't duplicate and retired hooks go. Codex runs them once the account has
-# reviewed them: the first Codex session below the root asks once ("Trust all and continue").
+# Hooks, in the workspace's project settings of both clients (same format): the skill-loading reminder on every
+# prompt, subagent start, and session start after compaction or resume, and the skill gate (hooks/skill-gate.sh): it
+# marks those starts, denies every tool but a skill load while marked, and clears on the load (docs/adr/0009).
+# Claude Code gets the gate on subagent starts too; Codex, whose tool hooks carry no agent_id, only on session start.
+# Earlier entries pointing into $dst/hooks are dropped first, so reruns don't duplicate and retired hooks go. Codex
+# runs them once the account has reviewed them: the first Codex session below the root asks once ("Trust all and continue").
 for x in "$f" "$root/.codex/hooks.json"; do
   mkdir -p "$(dirname "$x")"; [ -s "$x" ] || echo '{}' > "$x"
-  jq --arg d "\"$dst/hooks/" --arg s "\"$dst/hooks/load-skills.sh\"" '
-    def put($ev; $matcher): .hooks[$ev] += [({matcher: $matcher} | with_entries(select(.value != null))) + {hooks: [{type: "command", command: $s}]}];
-    .hooks //= {} | .hooks |= (map_values(map(select(all(.hooks[]?; .command // "" | startswith($d) | not)))) | with_entries(select(.value != [])))
-    | put("UserPromptSubmit"; null) | put("SubagentStart"; null) | put("SessionStart"; "compact|resume")' "$x" > "$x.tmp"
+  codex=false; [ "$x" = "$f" ] || codex=true
+  jq --arg d "\"$dst/hooks/" --arg s "\"$dst/hooks/load-skills.sh\"" --arg g "\"$dst/hooks/skill-gate.sh\"" --argjson codex "$codex" '
+    def put($ev; $matcher; $cmd): .hooks[$ev] += [({matcher: $matcher} | with_entries(select(.value != null))) + {hooks: [{type: "command", command: $cmd}]}];
+    ($g + (if $codex then " --codex" else "" end)) as $gate
+    | .hooks //= {} | .hooks |= (map_values(map(select(all(.hooks[]?; .command // "" | startswith($d) | not)))) | with_entries(select(.value != [])))
+    | put("UserPromptSubmit"; null; $s) | put("SubagentStart"; null; $s) | put("SessionStart"; "compact|resume"; $s)
+    | put("SessionStart"; "compact|resume"; $gate) | put("PreToolUse"; null; $gate) | put("PostToolUse"; (if $codex then null else "Skill" end); $gate)
+    | if $codex then . else put("SubagentStart"; null; $gate) end' "$x" > "$x.tmp"
   cat "$x.tmp" > "$x"; rm -f "$x.tmp"
 done
 # Codex trust: without it Codex ignores the root's hooks and config. An existing entry for the root is left as is.

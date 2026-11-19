@@ -10,7 +10,7 @@ They hold in every domain we work in: code, documentation, tests, tasks and work
 
 **Least debt.** The least total debt over the system's life, not the smallest change today. Build only for a real, current need; use an existing owner or a mature tool before building your own; retire what a change replaces.
 
-**Root cause.** Fix a problem where it starts: in the principle, the skill or how they are loaded. Change the structure instead of adding a guard for the single case.
+**Root cause.** Fix a problem where it starts, and change the structure instead of adding a guard for the single case. A lesson sharpens a principle or improves how it is loaded or enforced (a hook, a check, a stronger pointer word); it never adds a rule for its own case. When a principle already covers what went wrong, the failure is in loading, not in the text.
 
 **Self-correcting.** Rules aren't always followed, so whoever finds a violation repairs it: within their task they fix it, otherwise they add it to the owner's open issue, or open one if none fits. The start and end of every project check the work against the doctrine.
 

@@ -4,7 +4,6 @@ description: Engineering rules beyond AGENTS. Use for any change to code, tests,
 ---
 
 - **Requirements** trace to a real goal and its source; "don't build it" is the first option.
-- **Own code** only for domain behavior, physical safety and needs no mature tool serves.
 - **No replay.** A cancellation preserves uncertain effects and doesn't authorize a replay. A retry only re-establishes a lost connection, with backoff and a log line when the outage starts and when it ends; nothing that acts on hardware or runs a job retries.
 - **Operator responsibility.** Software guards the common path and the hazards an operator can't see or stop in time. Rare faults, deliberate operator actions, and anything the hardware e-stop or the robot's own limits cover belong to the operator. A new gate, safety test or fault-handling path names the real scenario, how often it happens, and why the operator can't own it; without that, it isn't built.
 - **Gates.** A gate is any condition that refuses a start, stops a run, drops data or marks a device not ready. Only an operator ruling, cited in the commit, or physical safety at the device owner may add one; without that it becomes a question to the operator. Missing, stale or unproven input is reported, as a warning or a record marked incomplete, and never stops work by itself. A gate refuses only the faulty case: its condition reads what the run will actually use, from that value's owner, and a test shows the nearest valid run passing it.

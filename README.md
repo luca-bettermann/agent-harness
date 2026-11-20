@@ -17,7 +17,7 @@ The harness is split into independent axes, each with one owner: knowledge, task
 
 ## Hooks
 
-Two hooks, the same for Claude Code and Codex: on every prompt, at every subagent start, and after compaction or resume, the agent is told AGENTS' skill-loading rule (`sh hooks/load-skills.sh --check`). Both clients also get a gate (`sh hooks/skill-gate.sh --check`): after compaction or resume, and in Claude Code at a subagent start too, every tool except a skill load is denied until the agent loads a skill (Claude Code: the `Skill` tool; Codex: a call whose input contains `SKILL.md`; [ADR 0009](docs/adr/0009-skill-gate.md)). For Codex the installer trusts the workspace in the account's config; the first Codex session then asks once to trust the hook.
+Three hooks, the same for Claude Code and Codex: on every prompt, at every subagent start, and after compaction or resume, the agent is told AGENTS' skill-loading rule (`sh hooks/load-skills.sh --check`). Both clients also get a gate (`sh hooks/skill-gate.sh --check`): after compaction or resume, and in Claude Code at a subagent start too, every tool except a skill load is denied until the agent loads a skill (Claude Code: the `Skill` tool; Codex: a call whose input contains `SKILL.md`; [ADR 0009](docs/adr/0009-skill-gate.md)). A command guard (`sh hooks/command-guard.sh --check`) refuses `pkill`, `killall`, `kill` by pattern and a `git stash` without a pathspec, naming the allowed form ([ADR 0010](docs/adr/0010-command-guard.md)). For Codex the installer trusts the workspace in the account's config; the first Codex session then asks once to trust the hook.
 
 ## Requirements
 

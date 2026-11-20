@@ -14,6 +14,10 @@ The operator switches it on and off. While it is on, engineering's _Stop only fo
 - **Caps full.** After each completion, start every issue whose blockers are Done, across repositories in parallel, up to the caps. A lowered cap holds back new dispatches only; running agents finish. A planner's brief cites the `issue-tracker` sizing.
 - **Unattended commands.** An approval prompt is a wait nobody ends, so every brief tells its agent to keep commands approvable: one purpose each, credentials from the environment (git through its credential helper), deletes by exact path inside its own issue's folders.
 
+## Findings
+
+A review finding or audit row is a candidate, not a task (AGENTS, Least debt). Before dispatching it, the coordinator triages it: the real, current need (what goes wrong, how likely, physical, data or cosmetic), the simplest fix, accept and document when it is too niche, and the operator's call when the operator handles it or may bend a rule for this case (a red Stop beside a blue Pause). The brief carries the triage. When a round only finds the next edge of the previous fix, the loop ends and the remaining rows go to the operator.
+
 ## Operator words
 
 Attended or autonomous, an operator ruling or comment is a source (AGENTS, Single source of truth):

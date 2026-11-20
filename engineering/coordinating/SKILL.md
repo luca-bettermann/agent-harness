@@ -18,6 +18,8 @@ The operator switches it on and off. While it is on, engineering's _Stop only fo
 
 A review finding or audit row is a candidate, not a task (AGENTS, Least debt). Before dispatching it, the coordinator triages it: the real, current need (what goes wrong, how likely, physical, data or cosmetic), the simplest fix, accept and document when it is too niche, and the operator's call when the operator handles it or may bend a rule for this case (a red Stop beside a blue Pause). The brief carries the triage. When a round only finds the next edge of the previous fix, the loop ends and the remaining rows go to the operator.
 
+Before accepting a builder's work, the coordinator checks the skills its report names against what the diff touched (a web UI needs frontend, code needs engineering) and sends a gap back to the builder.
+
 ## Operator words
 
 Attended or autonomous, an operator ruling or comment is a source (AGENTS, Single source of truth):
